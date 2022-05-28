@@ -50,10 +50,7 @@ export class VehiclesService {
       ref = ref.where('userId', '==', data.userId)
     }
 
-    const q = await firebaseClient.db
-      .collection('vehicles')
-
-      .get()
+    const q = await ref.get()
 
     return q.docs.map((d) => doc2Vehicle(d.data()))
   }
