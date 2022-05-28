@@ -1,0 +1,4 @@
+{
+  "HELLO_MESSAGE": "Hello",
+  "HELLO_MESSAGE_WITH_NAME": "Hello {name}"
+}

@@ -1,0 +1,4 @@
+{
+  "HELLO_MESSAGE": "こんにちは",
+  "HELLO_MESSAGE_WITH_NAME": "こんにちは {name}!"
+}
