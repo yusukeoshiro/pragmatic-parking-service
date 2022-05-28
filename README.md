@@ -4,3 +4,8 @@
 ```
 npm run start:dev
 ```
+
+
+```
+gcloud builds submit --project pragmatic-parking-dev --config cloudbuild.yaml --substitutions=$(gcloud beta builds triggers describe pragmatic-parking-service-deploy --format json | jq -r '.substitutions | to_entries | map(.key + "=" + (.value | tostring)) |  join(",")')
+```
