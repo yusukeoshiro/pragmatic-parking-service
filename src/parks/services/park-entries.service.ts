@@ -3,16 +3,15 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common'
-import moment from 'moment-timezone'
-import { firebaseClient } from 'src/lib/firebase'
 import {
   ParkEntryCreateDto,
   ParkEntryDto,
   ParkEntryExitDto,
   ParkEntryListDto,
   ParkEntryStatus,
-} from './dto/park-entry.dto'
+} from 'src/parks/dto/park-entry.dto'
 import admin from 'firebase-admin'
+import { firebaseClient } from 'src/lib/firebase'
 
 @Injectable()
 export class ParkEntriesService {
@@ -21,8 +20,8 @@ export class ParkEntriesService {
     await ref.set({
       ...data,
       id: ref.id,
-      entryTime: data.entryTime?.toDate() ?? new Date(),
-      ...(data.exitTime && { exitTime: data.exitTime.toDate() }),
+      entryTime: data.entryTime ?? new Date(),
+      ...(data.exitTime && { exitTime: data.exitTime }),
       status: data.exitTime
         ? ParkEntryStatus.EXITED
         : ParkEntryStatus.IN_PARKING,
@@ -66,17 +65,17 @@ export class ParkEntriesService {
       ref = ref.where('vehicleId', '==', data.vehicleId)
     }
 
+    if (data.status) {
+      ref = ref.where('status', '==', data.status)
+    }
+
     const q = await ref.get()
     return q.docs.map((doc) => doc2ParkEntry(doc.data()))
   }
 }
 
 const doc2ParkEntry = (data: admin.firestore.DocumentData): ParkEntryDto => {
-  data.entryTime = data.entryTime
-    ? moment(data.entryTime.toDate()).tz('Asia/Tokyo')
-    : undefined
-  data.exitTime = data.exitTime
-    ? moment(data.exitTime.toDate()).tz('Asia/Tokyo')
-    : undefined
+  data.entryTime = data.entryTime ? data.entryTime.toDate() : undefined
+  data.exitTime = data.exitTime ? data.exitTime.toDate() : undefined
   return data as ParkEntryDto
 }

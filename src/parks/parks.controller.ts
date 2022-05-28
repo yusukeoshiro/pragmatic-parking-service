@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
 import { ParkCreateDto, ParkListDto } from './dto/park.dto'
-import { ParksService } from './parks.service'
+import { ParksService } from './services/parks.service'
 
 @Controller('parks')
 export class ParksController {

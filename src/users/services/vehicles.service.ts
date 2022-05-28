@@ -4,7 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { firebaseClient } from 'src/lib/firebase'
-import { VehicleCreateDto, VehicleDto, VehicleListDto } from './dto/vehicle.dto'
+import {
+  VehicleCreateDto,
+  VehicleDto,
+  VehicleListDto,
+} from '../dto/vehicle.dto'
 import admin from 'firebase-admin'
 
 @Injectable()
@@ -39,25 +43,27 @@ export class VehiclesService {
   }
 
   async list(data: VehicleListDto): Promise<VehicleDto[]> {
-    const q = await firebaseClient.db
-      .collection('vehicles')
-      .where('userId', '==', data.userId)
-      .get()
+    let ref: admin.firestore.CollectionReference | admin.firestore.Query =
+      firebaseClient.db.collection('vehicles')
 
-    return q.docs
-      .map((d) => d.data())
-      .map((d) => {
-        d.createdAt = d.createdAt?.toDate()
-        return d
-      }) as VehicleDto[]
+    if (data && data.userId) {
+      ref = ref.where('userId', '==', data.userId)
+    }
+
+    const q = await ref.get()
+
+    return q.docs.map((d) => doc2Vehicle(d.data()))
   }
 
   async getById(id: string): Promise<VehicleDto> {
     const q = await firebaseClient.db.collection('vehicles').doc(id).get()
     if (!q.exists) throw new NotFoundException(`${id} does not exist`)
 
-    const data = q.data()
-    data.createdAt = data.createdAt?.toDate()
-    return data as VehicleDto
+    return doc2Vehicle(q.data())
   }
+}
+
+const doc2Vehicle = (doc: admin.firestore.DocumentData) => {
+  doc.createdAt = doc.createdAt?.toDate()
+  return doc as VehicleDto
 }
