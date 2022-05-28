@@ -5,6 +5,8 @@ import { ConfigModule } from '@nestjs/config'
 import configuration from './config/configuration'
 import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n'
 import { UsersModule } from './users/users.module';
+import { VehiclesModule } from './vehicles/vehicles.module';
+import { ParksModule } from './parks/parks.module';
 import * as path from 'path'
 
 @Module({
@@ -28,6 +30,8 @@ import * as path from 'path'
       ],
     }),
     UsersModule,
+    VehiclesModule,
+    ParksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
