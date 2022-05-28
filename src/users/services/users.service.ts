@@ -6,9 +6,20 @@ import {
 import { firebaseClient } from 'src/lib/firebase'
 import { UserCreateDto, UserDto } from '../dto/user.dto'
 import admin from 'firebase-admin'
+import { VehicleCreateDto } from '../dto/vehicle.dto'
 
 @Injectable()
 export class UsersService {
+  async createAnonymous(): Promise<UserDto> {
+    const ref = firebaseClient.db.collection('users').doc()
+    const data: UserCreateDto = {
+      id: `${ref.id}@anonymous.com`,
+      firstName: 'anonymous',
+      lastName: 'anonymous',
+    }
+    return await this.create(data)
+  }
+
   async create(data: UserCreateDto): Promise<UserDto> {
     const exists = await firebaseClient.exists(`/users/${data.id}`)
     if (exists) throw new ConflictException(`${data.id} already exists`)

@@ -8,11 +8,39 @@ import {
   VehicleCreateDto,
   VehicleDto,
   VehicleListDto,
+  VehicleQueryDto,
 } from '../dto/vehicle.dto'
 import admin from 'firebase-admin'
+import { UsersService } from './users.service'
 
 @Injectable()
 export class VehiclesService {
+  constructor(private usersService: UsersService) {}
+  async createAnonymous(dataVehicle: VehicleQueryDto): Promise<VehicleDto> {
+    const user = await this.usersService.createAnonymous()
+    const data: VehicleCreateDto = {
+      ...dataVehicle,
+      name: 'anonymous',
+      userId: user.id,
+    }
+    return await this.create(data)
+  }
+
+  async query(data: VehicleQueryDto): Promise<VehicleDto | undefined> {
+    const q = await firebaseClient.db
+      .collection('vehicles')
+      .where('number', '==', data.number)
+      .where('letter', '==', data.letter)
+      .where('classNumber', '==', data.classNumber)
+      .where('regionName', '==', data.regionName)
+      .limit(1)
+      .get()
+    if (q.empty) {
+      return undefined
+    }
+    return doc2Vehicle(q.docs[0].data())
+  }
+
   async create(data: VehicleCreateDto): Promise<VehicleDto> {
     const list = await this.list(data)
     if (list.length > 30) {

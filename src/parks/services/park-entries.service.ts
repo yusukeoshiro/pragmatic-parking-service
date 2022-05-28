@@ -12,17 +12,40 @@ import {
 } from 'src/parks/dto/park-entry.dto'
 import admin from 'firebase-admin'
 import { firebaseClient } from 'src/lib/firebase'
+import { Storage } from '@google-cloud/storage'
+import { ConfigService } from '@nestjs/config'
+import fs from 'fs'
+
+const storage = new Storage()
 
 @Injectable()
 export class ParkEntriesService {
+  imagesBucket: string
+  constructor(private cs: ConfigService) {
+    this.imagesBucket = this.cs.get('imagesBucket')
+  }
   async create(data: ParkEntryCreateDto) {
+    const { image, ...parkEntryCreateDto } = data
+
     const ref = firebaseClient.db.collection('park_entries').doc()
+    const fileName = `${ref.id}.jpg`
+    fs.writeFileSync(
+      fileName,
+      image.replace(/^data:image\/jpeg;base64,/, ''),
+      'base64',
+    )
+
+    await storage.bucket(this.imagesBucket).upload(fileName)
+    fs.unlinkSync(fileName)
+
     await ref.set({
-      ...data,
+      ...parkEntryCreateDto,
       id: ref.id,
-      entryTime: data.entryTime ?? new Date(),
-      ...(data.exitTime && { exitTime: data.exitTime }),
-      status: data.exitTime
+      entryTime: parkEntryCreateDto.entryTime ?? new Date(),
+      ...(parkEntryCreateDto.exitTime && {
+        exitTime: parkEntryCreateDto.exitTime,
+      }),
+      status: parkEntryCreateDto.exitTime
         ? ParkEntryStatus.EXITED
         : ParkEntryStatus.IN_PARKING,
     })

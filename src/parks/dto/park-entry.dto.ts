@@ -9,10 +9,14 @@ import {
 import {
   IsEmail,
   IsEnum,
+  IsIn,
   IsNotEmpty,
+  IsNumberString,
   IsOptional,
   IsString,
+  Length,
 } from 'class-validator'
+import { validLetters, validRegionNames } from 'src/users/dto/constants'
 import { UserDto } from 'src/users/dto/user.dto'
 import { VehicleDto } from 'src/users/dto/vehicle.dto'
 import { ParkDto } from './park.dto'
@@ -57,6 +61,9 @@ export class ParkEntryDto {
 
   @Field(() => UserDto)
   user: UserDto
+
+  @Field()
+  imageUrl: string
 }
 
 @InputType()
@@ -90,6 +97,10 @@ export class ParkEntryCreateDto {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   exitTime?: Date
+
+  @IsString()
+  @IsNotEmpty()
+  image: string
 }
 
 @InputType()
@@ -113,4 +124,28 @@ export class ParkEntryListDto {
   @IsOptional()
   @IsEnum(ParkEntryStatus)
   status?: ParkEntryStatus
+}
+
+export class ParkEntryAnonymousCreateDto {
+  @IsNumberString()
+  @Length(1, 4)
+  number: string
+
+  @IsIn(validLetters)
+  letter: string
+
+  @Length(2, 3)
+  @IsNumberString()
+  classNumber: string
+
+  @IsIn(validRegionNames)
+  regionName: string
+
+  @IsString()
+  @IsNotEmpty()
+  parkId: string
+
+  @IsString()
+  @IsNotEmpty()
+  image: string
 }

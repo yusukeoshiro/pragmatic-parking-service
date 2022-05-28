@@ -8,7 +8,6 @@ steps:
     waitFor:
       - build-push
     args:
-      - beta
       - run
       - deploy
       - $_SERVICE_NAME
@@ -17,4 +16,5 @@ steps:
       - --platform=managed
       - --allow-unauthenticated
       - --service-account=$_SERVICE_ACCOUNT
+      - --set-env-vars=IMAGE_BUCKET=$_IMAGE_BUCKET
 timeout: 3600s

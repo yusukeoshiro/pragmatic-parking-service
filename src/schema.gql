@@ -53,6 +53,7 @@ type ParkEntryDto {
   entryTime: DateTime!
   exitTime: DateTime!
   id: ID!
+  imageUrl: String!
   park: ParkDto!
   parkId: String!
   status: ParkEntryStatus!

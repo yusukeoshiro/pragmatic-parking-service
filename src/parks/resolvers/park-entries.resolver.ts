@@ -19,15 +19,23 @@ import { VehiclesService } from 'src/users/services/vehicles.service'
 import { ParkEntriesService } from '../services/park-entries.service'
 import { VehicleDto } from 'src/users/dto/vehicle.dto'
 import { BadRequestException } from '@nestjs/common'
+import { Storage } from '@google-cloud/storage'
+import { ConfigService } from '@nestjs/config'
+
+const storage = new Storage()
 
 @Resolver(() => ParkEntryDto)
 export class ParkEntriesResolver {
+  private imagesBucket: string
   constructor(
     private parkEntriesService: ParkEntriesService,
     private usersService: UsersService,
     private vehiclesService: VehiclesService,
     private parksService: ParksService,
-  ) {}
+    private cs: ConfigService,
+  ) {
+    this.imagesBucket = this.cs.get('imagesBucket')
+  }
 
   @Query(() => [ParkEntryDto])
   async parkEntries(@Args('parkEntryListDto') data: ParkEntryListDto) {
@@ -75,5 +83,19 @@ export class ParkEntriesResolver {
   @ResolveField(() => VehicleDto)
   async vehicle(@Parent() parkEntry: ParkEntryDto): Promise<VehicleDto> {
     return await this.vehiclesService.getById(parkEntry.vehicleId)
+  }
+
+  @ResolveField()
+  async imageUrl(@Parent() parkEntry: ParkEntryDto): Promise<string> {
+    const [url] = await storage
+      .bucket(this.imagesBucket)
+      .file(`${parkEntry.id}.jpg`)
+      .getSignedUrl({
+        version: 'v4',
+        action: 'read',
+        expires: Date.now() + 120 * 60 * 1000, // 120 minutes
+      })
+
+    return url
   }
 }
