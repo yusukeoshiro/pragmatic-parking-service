@@ -43,9 +43,16 @@ export class VehiclesService {
   }
 
   async list(data: VehicleListDto): Promise<VehicleDto[]> {
+    let ref: admin.firestore.CollectionReference | admin.firestore.Query =
+      firebaseClient.db.collection('vehicles')
+
+    if (data && data.userId) {
+      ref = ref.where('userId', '==', data.userId)
+    }
+
     const q = await firebaseClient.db
       .collection('vehicles')
-      .where('userId', '==', data.userId)
+
       .get()
 
     return q.docs.map((d) => doc2Vehicle(d.data()))

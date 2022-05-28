@@ -3,7 +3,7 @@ import { IsEmail, IsString } from 'class-validator'
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { VehicleDto } from './vehicle.dto'
 
-@ObjectType()
+@ObjectType('User')
 export class UserDto {
   @Field(() => ID)
   @IsEmail()

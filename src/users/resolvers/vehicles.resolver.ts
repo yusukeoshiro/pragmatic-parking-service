@@ -32,7 +32,9 @@ export class VehiclesResolver {
   }
 
   @Query(() => [VehicleDto])
-  async vehicles(@Args('VehicleListDto') data: VehicleListDto) {
+  async vehicles(
+    @Args('VehicleListDto', { nullable: true }) data?: VehicleListDto,
+  ) {
     return await this.vehiclesService.list(data)
   }
 

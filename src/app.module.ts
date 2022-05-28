@@ -18,6 +18,7 @@ import { join } from 'path'
       debug: true,
       playground: true,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
     }),
     ConfigModule.forRoot({
       isGlobal: true,

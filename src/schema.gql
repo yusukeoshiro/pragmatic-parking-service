@@ -2,34 +2,80 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type VehicleDto {
-  id: ID!
-  name: String!
-  number: String!
-  letter: String!
-  classNumber: String!
-  regionName: String!
-  user: UserDto!
-  createdAt: DateTime!
-  parkEntries: [ParkEntryDto!]!
-}
-
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
-type ParkDto {
-  id: ID!
-  name: String!
+input LatLngInput {
+  latitude: Float!
+  longitude: Float!
+}
+
+type Mutation {
+  createPark(parkCreateDto: ParkCreateDto!): ParkDto!
+  createParkEntry(parkEntryCreateDto: ParkEntryCreateDto!): ParkEntryDto!
+  createUser(userCreateDto: UserCreateDto!): User!
+  createVehicle(vehicleCreateDto: VehicleCreateDto!): Vehicle!
+  exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
+}
+
+input ParkCreateDto {
   address: String!
   capacity: Float!
   latitude: Float!
   longitude: Float!
-  geoHash: String!
+  name: String!
+}
+
+type ParkDto {
+  address: String!
+  capacity: Float!
   createdAt: DateTime!
   distance(parkListDto: ParkListDto!): Float
+  geoHash: String!
+  id: ID!
+  latitude: Float!
+  longitude: Float!
+  name: String!
   parkEntries: [ParkEntryDto!]!
+}
+
+input ParkEntryCreateDto {
+  entryTime: DateTime
+  exitTime: DateTime
+  parkId: String!
+  userId: String!
+  vehicleId: String!
+}
+
+type ParkEntryDto {
+  entryTime: DateTime!
+  exitTime: DateTime!
+  id: ID!
+  park: ParkDto!
+  parkId: String!
+  status: ParkEntryStatus!
+  user: User!
+  userId: String!
+  vehicle: Vehicle!
+  vehicleId: String!
+}
+
+input ParkEntryExitDto {
+  id: String!
+}
+
+input ParkEntryListDto {
+  parkId: String
+  status: String
+  userId: String
+  vehicleId: String
+}
+
+enum ParkEntryStatus {
+  EXITED
+  IN_PARKING
 }
 
 input ParkListDto {
@@ -37,96 +83,50 @@ input ParkListDto {
   distance: Float
 }
 
-input LatLngInput {
-  latitude: Float!
-  longitude: Float!
-}
-
-type ParkEntryDto {
-  id: ID!
-  vehicleId: String!
-  userId: String!
-  parkId: String!
-  status: ParkEntryStatus!
-  entryTime: DateTime!
-  exitTime: DateTime!
-  park: ParkDto!
-  vehicle: VehicleDto!
-  user: UserDto!
-}
-
-enum ParkEntryStatus {
-  IN_PARKING
-  EXITED
-}
-
-type UserDto {
-  id: ID!
-  firstName: String
-  lastName: String
-  createdAt: DateTime!
-  vehicles: [VehicleDto!]!
-  displayName: String!
-  parkEntries: [ParkEntryDto!]!
-}
-
 type Query {
-  users: [UserDto!]!
-  vehicles(VehicleListDto: VehicleListDto!): [VehicleDto!]!
-  parks(parkListDto: ParkListDto): [ParkDto!]!
   parkEntries(parkEntryListDto: ParkEntryListDto!): [ParkEntryDto!]!
+  parks(parkListDto: ParkListDto): [ParkDto!]!
+  users: [User!]!
+  vehicles(VehicleListDto: VehicleListDto): [Vehicle!]!
 }
 
-input VehicleListDto {
-  userId: String!
-}
-
-input ParkEntryListDto {
-  vehicleId: String
-  userId: String
-  parkId: String
-  status: String
-}
-
-type Mutation {
-  createUser(userCreateDto: UserCreateDto!): UserDto!
-  createVehicle(vehicleCreateDto: VehicleCreateDto!): VehicleDto!
-  createPark(parkCreateDto: ParkCreateDto!): ParkDto!
-  exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
-  createParkEntry(parkEntryCreateDto: ParkEntryCreateDto!): ParkEntryDto!
+type User {
+  createdAt: DateTime!
+  displayName: String!
+  firstName: String
+  id: ID!
+  lastName: String
+  parkEntries: [ParkEntryDto!]!
+  vehicles: [Vehicle!]!
 }
 
 input UserCreateDto {
-  id: String!
   firstName: String!
+  id: String!
   lastName: String!
 }
 
-input VehicleCreateDto {
+type Vehicle {
+  classNumber: String!
+  createdAt: DateTime!
+  id: ID!
+  letter: String!
   name: String!
   number: String!
-  letter: String!
+  parkEntries: [ParkEntryDto!]!
+  regionName: String!
+  user: User!
+}
+
+input VehicleCreateDto {
   classNumber: String!
+  letter: String!
+  name: String!
+  number: String!
   regionName: String!
   userId: String!
 }
 
-input ParkCreateDto {
-  name: String!
-  address: String!
-  capacity: Float!
-  latitude: Float!
-  longitude: Float!
-}
-
-input ParkEntryExitDto {
-  id: String!
-}
-
-input ParkEntryCreateDto {
-  vehicleId: String!
-  userId: String!
-  parkId: String!
-  entryTime: DateTime
-  exitTime: DateTime
+input VehicleListDto {
+  userId: String
 }
