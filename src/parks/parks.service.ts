@@ -52,9 +52,7 @@ export class ParksService {
     const q = await firebaseClient.db.collection('parks').doc(id).get()
     if (!q.exists) throw new NotFoundException(`${id} does not exist`)
 
-    const data = q.data()
-    data.createdAt = data.createdAt?.toDate()
-    return data as ParkDto
+    return doc2Park(q.data())
   }
 }
 

@@ -7,6 +7,7 @@ import { I18nJsonLoader, I18nModule, QueryResolver } from 'nestjs-i18n'
 import { UsersModule } from './users/users.module';
 import { VehiclesModule } from './vehicles/vehicles.module';
 import { ParksModule } from './parks/parks.module';
+import { ParkEntriesModule } from './park-entries/park-entries.module';
 import * as path from 'path'
 
 @Module({
@@ -32,6 +33,7 @@ import * as path from 'path'
     UsersModule,
     VehiclesModule,
     ParksModule,
+    ParkEntriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
