@@ -2,7 +2,6 @@ import { Field, Float, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { Transform } from 'class-transformer'
 import {
   IsLatitude,
-  IsLatLong,
   IsLongitude,
   IsNumber,
   IsOptional,
@@ -10,6 +9,7 @@ import {
   IsString,
   Length,
 } from 'class-validator'
+import { ParkEntryDto } from './park-entry.dto'
 
 @ObjectType()
 export class ParkDto {
@@ -47,6 +47,9 @@ export class ParkDto {
 
   @Field(() => Float, { nullable: true })
   distance: number
+
+  @Field(() => [ParkEntryDto])
+  parkEntries: ParkEntryDto[]
 }
 
 @InputType()

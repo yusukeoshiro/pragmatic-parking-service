@@ -6,16 +6,23 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql'
+import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import { ParkEntriesService } from 'src/parks/services/park-entries.service'
 import { UserDto } from 'src/users/dto/user.dto'
 import { UsersService } from 'src/users/users.service'
-import { VehicleCreateDto, VehicleDto, VehicleListDto } from './dto/vehicle.dto'
-import { VehiclesService } from './vehicles.service'
+import {
+  VehicleCreateDto,
+  VehicleDto,
+  VehicleListDto,
+} from '../dto/vehicle.dto'
+import { VehiclesService } from '../services/vehicles.service'
 
 @Resolver(() => VehicleDto)
 export class VehiclesResolver {
   constructor(
     private vehiclesService: VehiclesService,
     private usersService: UsersService,
+    private parkEntriesService: ParkEntriesService,
   ) {}
 
   @Mutation(() => VehicleDto)
@@ -32,5 +39,10 @@ export class VehiclesResolver {
   @ResolveField(() => UserDto)
   user(@Parent() vehicle: VehicleDto) {
     return this.usersService.getById(vehicle.userId)
+  }
+
+  @ResolveField(() => [ParkEntryDto])
+  async parkEntries(@Parent() vehicle: VehicleDto) {
+    return this.parkEntriesService.list({ vehicleId: vehicle.id })
   }
 }

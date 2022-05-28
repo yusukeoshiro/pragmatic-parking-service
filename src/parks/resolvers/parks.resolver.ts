@@ -8,12 +8,17 @@ import {
   Resolver,
 } from '@nestjs/graphql'
 import { distanceBetween } from 'geofire-common'
-import { ParkCreateDto, ParkDto, ParkListDto } from './dto/park.dto'
-import { ParksService } from './parks.service'
+import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import { ParkCreateDto, ParkDto, ParkListDto } from '../dto/park.dto'
+import { ParksService } from '../services/parks.service'
+import { ParkEntriesService } from '../services/park-entries.service'
 
 @Resolver(() => ParkDto)
 export class ParksResolver {
-  constructor(private parksService: ParksService) {}
+  constructor(
+    private parksService: ParksService,
+    private parkEntriesService: ParkEntriesService,
+  ) {}
 
   @Mutation(() => ParkDto)
   async createPark(@Args('parkCreateDto') data: ParkCreateDto) {
@@ -34,5 +39,10 @@ export class ParksResolver {
       [data.center.latitude, data.center.longitude],
       [park.latitude, park.longitude],
     )
+  }
+
+  @ResolveField(() => [ParkEntryDto])
+  async parkEntries(@Parent() park: ParkDto) {
+    return await this.parkEntriesService.list({ parkId: park.id })
   }
 }

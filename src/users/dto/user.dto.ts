@@ -1,6 +1,7 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsEmail, IsString } from 'class-validator'
-import { VehicleDto } from 'src/vehicles/dto/vehicle.dto'
+import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import { VehicleDto } from './vehicle.dto'
 
 @ObjectType()
 export class UserDto {
@@ -24,6 +25,9 @@ export class UserDto {
 
   @Field()
   displayName: string
+
+  @Field(() => [ParkEntryDto])
+  parkEntries: ParkEntryDto[]
 }
 
 @InputType()

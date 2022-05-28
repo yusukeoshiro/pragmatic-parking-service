@@ -1,13 +1,13 @@
 import { forwardRef, Module } from '@nestjs/common'
 import { VehiclesController } from './vehicles.controller'
-import { VehiclesService } from './vehicles.service'
-import { VehiclesResolver } from './vehicles.resolver'
+import { VehiclesService } from '../users/services/vehicles.service'
+import { VehiclesResolver } from '../users/resolvers/vehicles.resolver'
 import { UsersModule } from 'src/users/users.module'
 
 @Module({
   controllers: [VehiclesController],
-  providers: [VehiclesService, VehiclesResolver],
+  providers: [],
   exports: [VehiclesService],
-  imports: [forwardRef(() => UsersModule)],
+  imports: [],
 })
 export class VehiclesModule {}

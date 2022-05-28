@@ -1,5 +1,6 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsEmail, IsIn, IsNumberString, Length } from 'class-validator'
+import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { UserDto } from 'src/users/dto/user.dto'
 import { validLetters, validRegionNames } from './constants'
 
@@ -33,11 +34,14 @@ export class VehicleDto {
   @IsEmail()
   userId: string
 
-  @Field((type) => UserDto)
+  @Field(() => UserDto)
   user: UserDto
 
   @Field()
   createdAt: Date
+
+  @Field(() => [ParkEntryDto])
+  parkEntries: ParkEntryDto[]
 }
 
 @InputType()

@@ -11,21 +11,13 @@ type VehicleDto {
   regionName: String!
   user: UserDto!
   createdAt: DateTime!
+  parkEntries: [ParkEntryDto!]!
 }
 
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type UserDto {
-  id: ID!
-  firstName: String
-  lastName: String
-  createdAt: DateTime!
-  vehicles: [VehicleDto!]!
-  displayName: String!
-}
 
 type ParkDto {
   id: ID!
@@ -37,6 +29,7 @@ type ParkDto {
   geoHash: String!
   createdAt: DateTime!
   distance(parkListDto: ParkListDto!): Float
+  parkEntries: [ParkEntryDto!]!
 }
 
 input ParkListDto {
@@ -47,6 +40,34 @@ input ParkListDto {
 input LatLngInput {
   latitude: Float!
   longitude: Float!
+}
+
+type ParkEntryDto {
+  id: ID!
+  vehicleId: String!
+  userId: String!
+  parkId: String!
+  status: ParkEntryStatus!
+  entryTime: DateTime!
+  exitTime: DateTime!
+  park: ParkDto!
+  vehicle: VehicleDto!
+  user: UserDto!
+}
+
+enum ParkEntryStatus {
+  IN_PARKING
+  EXITED
+}
+
+type UserDto {
+  id: ID!
+  firstName: String
+  lastName: String
+  createdAt: DateTime!
+  vehicles: [VehicleDto!]!
+  displayName: String!
+  parkEntries: [ParkEntryDto!]!
 }
 
 type Query {
@@ -63,6 +84,7 @@ type Mutation {
   createUser(userCreateDto: UserCreateDto!): UserDto!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): VehicleDto!
   createPark(parkCreateDto: ParkCreateDto!): ParkDto!
+  createParkEntry(parkEntryCreateDto: ParkEntryCreateDto!): ParkEntryDto!
 }
 
 input UserCreateDto {
@@ -86,4 +108,12 @@ input ParkCreateDto {
   capacity: Float!
   latitude: Float!
   longitude: Float!
+}
+
+input ParkEntryCreateDto {
+  vehicleId: String!
+  userId: String!
+  parkId: String!
+  entryTime: DateTime
+  exitTime: DateTime
 }

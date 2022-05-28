@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { firebaseClient } from 'src/lib/firebase'
-import { ParkCreateDto, ParkDto, ParkListDto } from './dto/park.dto'
+import { ParkCreateDto, ParkDto, ParkListDto } from '../dto/park.dto'
 import {
   geohashForLocation,
   geohashQueryBounds,
