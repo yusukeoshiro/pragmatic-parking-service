@@ -27,9 +27,32 @@ type UserDto {
   displayName: String!
 }
 
+type ParkDto {
+  id: ID!
+  name: String!
+  address: String!
+  capacity: Float!
+  latitude: Float!
+  longitude: Float!
+  geoHash: String!
+  createdAt: DateTime!
+  distance(parkListDto: ParkListDto!): Float
+}
+
+input ParkListDto {
+  center: LatLngInput
+  distance: Float
+}
+
+input LatLngInput {
+  latitude: Float!
+  longitude: Float!
+}
+
 type Query {
   users: [UserDto!]!
   vehicles(VehicleListDto: VehicleListDto!): [VehicleDto!]!
+  parks(parkListDto: ParkListDto): [ParkDto!]!
 }
 
 input VehicleListDto {
@@ -39,6 +62,7 @@ input VehicleListDto {
 type Mutation {
   createUser(userCreateDto: UserCreateDto!): UserDto!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): VehicleDto!
+  createPark(parkCreateDto: ParkCreateDto!): ParkDto!
 }
 
 input UserCreateDto {
@@ -54,4 +78,12 @@ input VehicleCreateDto {
   classNumber: String!
   regionName: String!
   userId: String!
+}
+
+input ParkCreateDto {
+  name: String!
+  address: String!
+  capacity: Float!
+  latitude: Float!
+  longitude: Float!
 }

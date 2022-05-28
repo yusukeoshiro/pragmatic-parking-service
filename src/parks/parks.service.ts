@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, Sse } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common'
 import { firebaseClient } from 'src/lib/firebase'
 import { ParkCreateDto, ParkDto, ParkListDto } from './dto/park.dto'
 import {
@@ -21,31 +25,56 @@ export class ParksService {
     return await this.getById(ref.id)
   }
 
-  async list(data: ParkListDto): Promise<ParkDto[]> {
-    const [lat, lng] = data.center.split(',').map((l) => Number(l))
-    const distanceM = data.distance * 1000 // in meter
+  async list(data?: ParkListDto): Promise<ParkDto[]> {
+    if (!data || Object.keys(data).length === 0) {
+      const q = await firebaseClient.db.collection('parks').get()
+      return q.docs.map((doc) => doc2Park(doc.data()))
+    }
 
-    const bounds = geohashQueryBounds([lat, lng], distanceM)
-    const promises = bounds.map((b) =>
-      firebaseClient.db
-        .collection('parks')
-        .orderBy('geoHash')
-        .startAt(b[0])
-        .endAt(b[1])
-        .get(),
-    )
-    const qs = await Promise.all(promises)
-    const parks = qs
-      .map((q) => q.docs.map((doc) => doc.data()))
-      .flat()
-      .map((park) => doc2Park(park))
-      .filter(
-        (park) =>
-          distanceBetween([lat, lng], [park.latitude, park.longitude]) <
-          data.distance,
+    if (data.center && data.distance) {
+      const distanceM = data.distance * 1000 // in meter
+
+      const bounds = geohashQueryBounds(
+        [data.center.latitude, data.center.longitude],
+        distanceM,
       )
+      const promises = bounds.map((b) =>
+        firebaseClient.db
+          .collection('parks')
+          .orderBy('geoHash')
+          .startAt(b[0])
+          .endAt(b[1])
+          .get(),
+      )
+      const qs = await Promise.all(promises)
+      const parks = qs
+        .map((q) => q.docs.map((doc) => doc.data()))
+        .flat()
+        .map((park) => doc2Park(park))
+        .filter(
+          (park) =>
+            distanceBetween(
+              [data.center.latitude, data.center.longitude],
+              [park.latitude, park.longitude],
+            ) < data.distance,
+        )
+        .sort((a, b) => {
+          return (
+            distanceBetween(
+              [data.center.latitude, data.center.longitude],
+              [a.latitude, a.longitude],
+            ) -
+            distanceBetween(
+              [data.center.latitude, data.center.longitude],
+              [b.latitude, b.longitude],
+            )
+          )
+        })
 
-    return parks
+      return parks
+    }
+
+    throw new BadRequestException()
   }
 
   async getById(id: string): Promise<ParkDto> {
