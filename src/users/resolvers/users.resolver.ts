@@ -9,9 +9,9 @@ import {
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { ParkEntriesService } from 'src/parks/services/park-entries.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
-import { UserCreateDto, UserDto } from './dto/user.dto'
-import { VehicleDto } from './dto/vehicle.dto'
-import { UsersService } from './users.service'
+import { UserCreateDto, UserDto } from '../dto/user.dto'
+import { VehicleDto } from '../dto/vehicle.dto'
+import { UsersService } from '../services/users.service'
 
 @Resolver(() => UserDto)
 export class UsersResolver {

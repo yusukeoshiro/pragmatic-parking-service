@@ -65,6 +65,10 @@ export class ParkEntriesService {
       ref = ref.where('vehicleId', '==', data.vehicleId)
     }
 
+    if (data.status) {
+      ref = ref.where('status', '==', data.status)
+    }
+
     const q = await ref.get()
     return q.docs.map((doc) => doc2ParkEntry(doc.data()))
   }

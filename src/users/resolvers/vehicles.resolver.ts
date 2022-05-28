@@ -9,7 +9,7 @@ import {
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { ParkEntriesService } from 'src/parks/services/park-entries.service'
 import { UserDto } from 'src/users/dto/user.dto'
-import { UsersService } from 'src/users/users.service'
+import { UsersService } from 'src/users/services/users.service'
 import {
   VehicleCreateDto,
   VehicleDto,

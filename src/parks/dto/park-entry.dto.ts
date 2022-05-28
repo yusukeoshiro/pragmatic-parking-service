@@ -6,7 +6,13 @@ import {
   ObjectType,
   registerEnumType,
 } from '@nestjs/graphql'
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator'
 import { UserDto } from 'src/users/dto/user.dto'
 import { VehicleDto } from 'src/users/dto/vehicle.dto'
 import { ParkDto } from './park.dto'
@@ -53,8 +59,11 @@ export class ParkEntryDto {
   user: UserDto
 }
 
+@InputType()
 export class ParkEntryExitDto {
+  @Field()
   @IsString()
+  @IsNotEmpty()
   id: string
 }
 
@@ -83,16 +92,25 @@ export class ParkEntryCreateDto {
   exitTime?: Date
 }
 
+@InputType()
 export class ParkEntryListDto {
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
   vehicleId?: string
 
+  @Field({ nullable: true })
   @IsEmail()
   @IsOptional()
   userId?: string
 
+  @Field({ nullable: true })
   @IsOptional()
   @IsString()
   parkId?: string
+
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsEnum(ParkEntryStatus)
+  status?: ParkEntryStatus
 }

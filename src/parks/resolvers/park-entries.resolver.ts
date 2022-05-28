@@ -1,7 +1,20 @@
-import { Args, Mutation, Parent, ResolveField, Resolver } from '@nestjs/graphql'
-import { ParkEntryCreateDto, ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import {
+  Args,
+  Mutation,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql'
+import {
+  ParkEntryCreateDto,
+  ParkEntryDto,
+  ParkEntryExitDto,
+  ParkEntryListDto,
+  ParkEntryStatus,
+} from 'src/parks/dto/park-entry.dto'
 import { ParksService } from 'src/parks/services/parks.service'
-import { UsersService } from 'src/users/users.service'
+import { UsersService } from 'src/users/services/users.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
 import { ParkEntriesService } from '../services/park-entries.service'
 import { VehicleDto } from 'src/users/dto/vehicle.dto'
@@ -16,6 +29,18 @@ export class ParkEntriesResolver {
     private parksService: ParksService,
   ) {}
 
+  @Query(() => [ParkEntryDto])
+  async parkEntries(@Args('parkEntryListDto') data: ParkEntryListDto) {
+    return await this.parkEntriesService.list(data)
+  }
+
+  @Mutation(() => ParkEntryDto)
+  async exitParkingEntry(
+    @Args('parkEntryExitDto') data: ParkEntryExitDto,
+  ): Promise<ParkEntryDto> {
+    return await this.parkEntriesService.exit(data)
+  }
+
   @Mutation(() => ParkEntryDto)
   async createParkEntry(@Args('parkEntryCreateDto') data: ParkEntryCreateDto) {
     const vehicle = await this.vehiclesService.getById(data.vehicleId)
@@ -24,6 +49,16 @@ export class ParkEntriesResolver {
     }
     await this.usersService.getById(data.userId)
     await this.parksService.getById(data.parkId)
+
+    const entries = await this.parkEntriesService.list({
+      vehicleId: data.vehicleId,
+      status: ParkEntryStatus.IN_PARKING,
+    })
+
+    if (entries.length > 0) {
+      throw new BadRequestException(`this vehicle is already parked here`)
+    }
+
     return this.parkEntriesService.create(data)
   }
 

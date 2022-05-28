@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { firebaseClient } from 'src/lib/firebase'
-import { UserCreateDto, UserDto } from './dto/user.dto'
+import { UserCreateDto, UserDto } from '../dto/user.dto'
 import admin from 'firebase-admin'
 
 @Injectable()
