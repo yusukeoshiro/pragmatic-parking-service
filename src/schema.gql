@@ -1,0 +1,57 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type VehicleDto {
+  id: ID!
+  name: String!
+  number: String!
+  letter: String!
+  classNumber: String!
+  regionName: String!
+  user: UserDto!
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserDto {
+  id: ID!
+  firstName: String
+  lastName: String
+  createdAt: DateTime!
+  vehicles: [VehicleDto!]!
+  displayName: String!
+}
+
+type Query {
+  users: [UserDto!]!
+  vehicles(VehicleListDto: VehicleListDto!): [VehicleDto!]!
+}
+
+input VehicleListDto {
+  userId: String!
+}
+
+type Mutation {
+  createUser(userCreateDto: UserCreateDto!): UserDto!
+  createVehicle(vehicleCreateDto: VehicleCreateDto!): VehicleDto!
+}
+
+input UserCreateDto {
+  id: String!
+  firstName: String!
+  lastName: String!
+}
+
+input VehicleCreateDto {
+  name: String!
+  number: String!
+  letter: String!
+  classNumber: String!
+  regionName: String!
+  userId: String!
+}

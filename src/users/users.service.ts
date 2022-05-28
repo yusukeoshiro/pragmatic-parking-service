@@ -23,12 +23,20 @@ export class UsersService {
     return await this.getById(data.id)
   }
 
+  async list(): Promise<UserDto[]> {
+    const q = await firebaseClient.db.collection('users').get()
+    return q.docs.map((doc) => doc2User(doc.data()))
+  }
+
   async getById(id: string): Promise<UserDto> {
     const q = await firebaseClient.db.collection('users').doc(id).get()
     if (!q.exists) throw new NotFoundException(`${id} does not exist`)
 
-    const data = q.data()
-    data.createdAt = data.createdAt?.toDate()
-    return data as UserDto
+    return doc2User(q.data())
   }
+}
+
+const doc2User = (doc: admin.firestore.DocumentData): UserDto => {
+  doc.createdAt = doc.createdAt?.toDate()
+  return doc as UserDto
 }
