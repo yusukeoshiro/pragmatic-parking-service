@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+} from '@nestjs/common'
+import { UsersService } from 'src/users/services/users.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
 import {
   ParkEntryAnonymousCreateDto,
   ParkEntryCreateDto,
+  ParkEntryStatus,
 } from './dto/park-entry.dto'
 import { ParkCreateDto, ParkListDto } from './dto/park.dto'
 import { ParkEntriesService } from './services/park-entries.service'
@@ -14,6 +23,7 @@ export class ParkEntriesController {
     private parksService: ParksService,
     private vehiclesService: VehiclesService,
     private parkEntriesService: ParkEntriesService,
+    private usersService: UsersService,
   ) {}
 
   @Post('create')
@@ -38,6 +48,18 @@ export class ParkEntriesController {
       vehicleId: vehicle.id,
       userId: vehicle.userId,
       parkId: data.parkId,
+    }
+
+    await this.usersService.getById(vehicle.userId)
+    await this.parksService.getById(data.parkId)
+
+    const entries = await this.parkEntriesService.list({
+      vehicleId: vehicle.id,
+      status: ParkEntryStatus.IN_PARKING,
+    })
+
+    if (entries.length > 0) {
+      throw new BadRequestException(`this vehicle is already parked here`)
     }
 
     return await this.parkEntriesService.create(parkEntriesCreateDto)
