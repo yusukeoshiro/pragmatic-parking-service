@@ -60,7 +60,7 @@ input ParkEntryCreateDto {
 
 type ParkEntryDto {
   entryTime: DateTime!
-  exitTime: DateTime!
+  exitTime: DateTime
   id: ID!
   imageUrl: String!
   park: ParkDto!
