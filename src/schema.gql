@@ -15,6 +15,7 @@ input LatLngInput {
 type Mutation {
   createPark(parkCreateDto: ParkCreateDto!): ParkDto!
   createParkEntry(parkEntryCreateDto: ParkEntryCreateDto!): ParkEntryDto!
+  createTenant(tenantCreateDto: TenantCreateDto!): TenantDto!
   createUser(userCreateDto: UserCreateDto!): User!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): Vehicle!
   exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
@@ -43,6 +44,7 @@ type ParkDto {
   longitude: Float!
   name: String!
   parkEntries: [ParkEntryDto!]!
+  tenants: [TenantDto!]!
 }
 
 input ParkEntryCreateDto {
@@ -92,10 +94,33 @@ type Query {
   park(parkDetailDto: ParkDetailDto!): ParkDto!
   parkEntries(parkEntryListDto: ParkEntryListDto!): [ParkEntryDto!]!
   parks(parkListDto: ParkListDto): [ParkDto!]!
+  tenant(tenantDetailDto: TenantDetailDto!): TenantDto!
+  tenants(tenantListDto: TenantListDto): [TenantDto!]!
   user(userDetailDto: UserDetailDto!): User!
   users(userListDto: UserListDto): [User!]!
   vehicle(vehicleDetailDto: VehicleDetailDto!): Vehicle!
   vehicles(VehicleListDto: VehicleListDto): [Vehicle!]!
+}
+
+input TenantCreateDto {
+  name: String!
+  parkId: String!
+}
+
+input TenantDetailDto {
+  id: ID!
+}
+
+type TenantDto {
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+  park: ParkDto!
+  parkId: String!
+}
+
+input TenantListDto {
+  parkId: String!
 }
 
 type User {

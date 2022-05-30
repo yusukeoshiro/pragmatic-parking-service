@@ -6,6 +6,8 @@ import { ParkEntriesService } from './services/park-entries.service'
 import { ParkEntriesResolver } from './resolvers/park-entries.resolver'
 import { UsersModule } from 'src/users/users.module'
 import { ParkEntriesController } from './park-entries.controller'
+import { TenantsService } from './services/tenants.service'
+import { TenantsResolver } from './resolvers/tenants.resolver'
 
 @Module({
   providers: [
@@ -13,6 +15,8 @@ import { ParkEntriesController } from './park-entries.controller'
     ParksResolver,
     ParkEntriesService,
     ParkEntriesResolver,
+    TenantsService,
+    TenantsResolver,
   ],
   exports: [ParksService, ParkEntriesService],
   controllers: [ParksController, ParkEntriesController],

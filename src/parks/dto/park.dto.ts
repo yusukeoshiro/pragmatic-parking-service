@@ -10,6 +10,7 @@ import {
   Length,
 } from 'class-validator'
 import { ParkEntryDto } from './park-entry.dto'
+import { TenantDto } from './tenant.dto'
 
 @ObjectType()
 export class ParkDto {
@@ -50,6 +51,9 @@ export class ParkDto {
 
   @Field(() => [ParkEntryDto])
   parkEntries: ParkEntryDto[]
+
+  @Field(() => [TenantDto])
+  tenants: TenantDto[]
 }
 
 @InputType()

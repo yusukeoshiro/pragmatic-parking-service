@@ -17,12 +17,15 @@ import {
 } from '../dto/park.dto'
 import { ParksService } from '../services/parks.service'
 import { ParkEntriesService } from '../services/park-entries.service'
+import { TenantDto } from '../dto/tenant.dto'
+import { TenantsService } from '../services/tenants.service'
 
 @Resolver(() => ParkDto)
 export class ParksResolver {
   constructor(
     private parksService: ParksService,
     private parkEntriesService: ParkEntriesService,
+    private tenantsService: TenantsService,
   ) {}
 
   @Mutation(() => ParkDto)
@@ -54,5 +57,10 @@ export class ParksResolver {
   @ResolveField(() => [ParkEntryDto])
   async parkEntries(@Parent() park: ParkDto) {
     return await this.parkEntriesService.list({ parkId: park.id })
+  }
+
+  @ResolveField(() => [TenantDto])
+  async tenants(@Parent() park: ParkDto) {
+    return await this.tenantsService.list({ parkId: park.id })
   }
 }
