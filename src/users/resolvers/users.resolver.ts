@@ -7,7 +7,9 @@ import {
   Resolver,
 } from '@nestjs/graphql'
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import { TenantUserBindingDto } from 'src/parks/dto/tenant-user.dto'
 import { ParkEntriesService } from 'src/parks/services/park-entries.service'
+import { TenantUserBindingsService } from 'src/parks/services/tenant-user-bindings.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
 import {
   UserCreateDto,
@@ -24,6 +26,7 @@ export class UsersResolver {
     private usersService: UsersService,
     private vehiclesService: VehiclesService,
     private parkEntriesService: ParkEntriesService,
+    private tenantUserBindingsService: TenantUserBindingsService,
   ) {}
 
   @Mutation(() => UserDto)
@@ -56,5 +59,10 @@ export class UsersResolver {
   @ResolveField(() => [ParkEntryDto])
   async parkEntries(@Parent() user: UserDto) {
     return this.parkEntriesService.list({ userId: user.id })
+  }
+
+  @ResolveField(() => [TenantUserBindingDto])
+  async tenantUserBindings(@Parent() user: UserDto) {
+    return await this.tenantUserBindingsService.list({ userId: user.id })
   }
 }

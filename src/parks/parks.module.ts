@@ -8,6 +8,8 @@ import { UsersModule } from 'src/users/users.module'
 import { ParkEntriesController } from './park-entries.controller'
 import { TenantsService } from './services/tenants.service'
 import { TenantsResolver } from './resolvers/tenants.resolver'
+import { TenantUserBindingsService } from './services/tenant-user-bindings.service'
+import { TenantUserBindingsResolver } from './resolvers/tenant-user-bindings.resolver'
 
 @Module({
   providers: [
@@ -17,8 +19,10 @@ import { TenantsResolver } from './resolvers/tenants.resolver'
     ParkEntriesResolver,
     TenantsService,
     TenantsResolver,
+    TenantUserBindingsService,
+    TenantUserBindingsResolver,
   ],
-  exports: [ParksService, ParkEntriesService],
+  exports: [ParksService, ParkEntriesService, TenantUserBindingsService],
   controllers: [ParksController, ParkEntriesController],
   imports: [forwardRef(() => UsersModule)],
 })

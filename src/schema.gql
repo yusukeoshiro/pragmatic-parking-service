@@ -16,6 +16,7 @@ type Mutation {
   createPark(parkCreateDto: ParkCreateDto!): ParkDto!
   createParkEntry(parkEntryCreateDto: ParkEntryCreateDto!): ParkEntryDto!
   createTenant(tenantCreateDto: TenantCreateDto!): TenantDto!
+  createTenantUserBinding(tenantUserBindingCreateDto: TenantUserBindingCreateDto!): TenantUserBindingDto!
   createUser(userCreateDto: UserCreateDto!): User!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): Vehicle!
   exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
@@ -95,6 +96,7 @@ type Query {
   parkEntries(parkEntryListDto: ParkEntryListDto!): [ParkEntryDto!]!
   parks(parkListDto: ParkListDto): [ParkDto!]!
   tenant(tenantDetailDto: TenantDetailDto!): TenantDto!
+  tenantUserBindings(tenantUserBindingListDto: TenantUserBindingListDto): [TenantUserBindingDto!]!
   tenants(tenantListDto: TenantListDto): [TenantDto!]!
   user(userDetailDto: UserDetailDto!): User!
   users(userListDto: UserListDto): [User!]!
@@ -117,10 +119,29 @@ type TenantDto {
   name: String!
   park: ParkDto!
   parkId: String!
+  tenantUserBindings: [TenantUserBindingDto!]!
 }
 
 input TenantListDto {
   parkId: String!
+}
+
+input TenantUserBindingCreateDto {
+  tenantId: String!
+  userId: String!
+}
+
+type TenantUserBindingDto {
+  id: ID!
+  tenant: TenantDto!
+  tenantId: String!
+  user: User!
+  userId: String!
+}
+
+input TenantUserBindingListDto {
+  tenantId: String
+  userId: String
 }
 
 type User {
@@ -131,6 +152,7 @@ type User {
   isAnonymous: Boolean!
   lastName: String
   parkEntries: [ParkEntryDto!]!
+  tenantUserBindings: [TenantUserBindingDto!]!
   vehicles: [Vehicle!]!
 }
 

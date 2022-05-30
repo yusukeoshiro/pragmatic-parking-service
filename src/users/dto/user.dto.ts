@@ -1,6 +1,7 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator'
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import { TenantUserBindingDto } from 'src/parks/dto/tenant-user.dto'
 import { VehicleDto } from './vehicle.dto'
 
 @ObjectType('User')
@@ -32,6 +33,9 @@ export class UserDto {
 
   @Field(() => [ParkEntryDto])
   parkEntries: ParkEntryDto[]
+
+  @Field(() => [TenantUserBindingDto])
+  tenantUserBindings: TenantUserBindingDto[]
 }
 
 @InputType()
