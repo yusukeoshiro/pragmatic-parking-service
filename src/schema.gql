@@ -93,7 +93,7 @@ type Query {
   parkEntries(parkEntryListDto: ParkEntryListDto!): [ParkEntryDto!]!
   parks(parkListDto: ParkListDto): [ParkDto!]!
   user(userDetailDto: UserDetailDto!): User!
-  users: [User!]!
+  users(userListDto: UserListDto): [User!]!
   vehicle(vehicleDetailDto: VehicleDetailDto!): Vehicle!
   vehicles(VehicleListDto: VehicleListDto): [Vehicle!]!
 }
@@ -103,6 +103,7 @@ type User {
   displayName: String!
   firstName: String
   id: ID!
+  isAnonymous: Boolean!
   lastName: String
   parkEntries: [ParkEntryDto!]!
   vehicles: [Vehicle!]!
@@ -111,11 +112,16 @@ type User {
 input UserCreateDto {
   firstName: String!
   id: String!
+  isAnonymous: Boolean!
   lastName: String!
 }
 
 input UserDetailDto {
   id: String!
+}
+
+input UserListDto {
+  isAnonymous: Boolean
 }
 
 type Vehicle {

@@ -1,5 +1,5 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
-import { IsEmail, IsString } from 'class-validator'
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator'
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { VehicleDto } from './vehicle.dto'
 
@@ -8,6 +8,10 @@ export class UserDto {
   @Field(() => ID)
   @IsEmail()
   id: string
+
+  @Field()
+  @IsBoolean()
+  isAnonymous: boolean
 
   @Field({ nullable: true })
   @IsString()
@@ -37,12 +41,24 @@ export class UserCreateDto {
   id: string
 
   @Field()
+  @IsBoolean()
+  isAnonymous: boolean
+
+  @Field()
   @IsString()
   firstName: string
 
   @Field()
   @IsString()
   lastName: string
+}
+
+@InputType()
+export class UserListDto {
+  @Field({ nullable: true })
+  @IsOptional()
+  @IsBoolean()
+  isAnonymous: boolean
 }
 
 @InputType()

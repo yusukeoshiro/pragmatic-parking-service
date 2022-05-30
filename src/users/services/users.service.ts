@@ -4,9 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { firebaseClient } from 'src/lib/firebase'
-import { UserCreateDto, UserDto } from '../dto/user.dto'
+import { UserCreateDto, UserDto, UserListDto } from '../dto/user.dto'
 import admin from 'firebase-admin'
 import { VehicleCreateDto } from '../dto/vehicle.dto'
+import { Args } from '@nestjs/graphql'
 
 @Injectable()
 export class UsersService {
@@ -16,6 +17,7 @@ export class UsersService {
       id: `${ref.id}@anonymous.com`,
       firstName: 'anonymous',
       lastName: 'anonymous',
+      isAnonymous: true,
     }
     return await this.create(data)
   }
@@ -34,8 +36,13 @@ export class UsersService {
     return await this.getById(data.id)
   }
 
-  async list(): Promise<UserDto[]> {
-    const q = await firebaseClient.db.collection('users').get()
+  async list(data?: UserListDto): Promise<UserDto[]> {
+    let ref: admin.firestore.CollectionReference | admin.firestore.Query =
+      firebaseClient.db.collection('users')
+    if (data && data.isAnonymous !== undefined) {
+      ref = ref.where('isAnonymous', '==', data.isAnonymous)
+    }
+    const q = await ref.get()
     return q.docs.map((doc) => doc2User(doc.data()))
   }
 

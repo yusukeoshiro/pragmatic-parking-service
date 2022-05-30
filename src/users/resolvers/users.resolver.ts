@@ -9,7 +9,12 @@ import {
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { ParkEntriesService } from 'src/parks/services/park-entries.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
-import { UserCreateDto, UserDetailDto, UserDto } from '../dto/user.dto'
+import {
+  UserCreateDto,
+  UserDetailDto,
+  UserDto,
+  UserListDto,
+} from '../dto/user.dto'
 import { VehicleDto } from '../dto/vehicle.dto'
 import { UsersService } from '../services/users.service'
 
@@ -32,8 +37,10 @@ export class UsersResolver {
   }
 
   @Query(() => [UserDto])
-  async users(): Promise<UserDto[]> {
-    return this.usersService.list()
+  async users(
+    @Args('userListDto', { nullable: true }) data: UserListDto,
+  ): Promise<UserDto[]> {
+    return this.usersService.list(data)
   }
 
   @ResolveField()
