@@ -14,9 +14,11 @@ import {
   TenantDto,
   TenantListDto,
 } from '../dto/tenant.dto'
+import { ValidationDto } from '../dto/validation.dto'
 import { ParksService } from '../services/parks.service'
 import { TenantUserBindingsService } from '../services/tenant-user-bindings.service'
 import { TenantsService } from '../services/tenants.service'
+import { ValidationsService } from '../services/validations.service'
 
 @Resolver(() => TenantDto)
 export class TenantsResolver {
@@ -24,6 +26,7 @@ export class TenantsResolver {
     private tenantsService: TenantsService,
     private parksService: ParksService,
     private tenantUserBindingsService: TenantUserBindingsService,
+    private validationsService: ValidationsService,
   ) {}
 
   @Mutation(() => TenantDto)
@@ -52,5 +55,10 @@ export class TenantsResolver {
   @ResolveField(() => [TenantUserBindingDto])
   async tenantUserBindings(@Parent() tenant: TenantDto) {
     return await this.tenantUserBindingsService.list({ tenantId: tenant.id })
+  }
+
+  @ResolveField(() => [ValidationDto])
+  async validation(@Parent() tenant: TenantDto) {
+    return await this.validationsService.list({ tenantId: tenant.id })
   }
 }

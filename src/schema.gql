@@ -18,6 +18,7 @@ type Mutation {
   createTenant(tenantCreateDto: TenantCreateDto!): TenantDto!
   createTenantUserBinding(tenantUserBindingCreateDto: TenantUserBindingCreateDto!): TenantUserBindingDto!
   createUser(userCreateDto: UserCreateDto!): User!
+  createValidation(validationCreateDto: ValidationCreateDto!): ValidationDto!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): Vehicle!
   exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
 }
@@ -51,6 +52,7 @@ type ParkDto {
 input ParkEntryCreateDto {
   entryTime: DateTime
   exitTime: DateTime
+  image: String!
   parkId: String!
   userId: String!
   vehicleId: String!
@@ -66,6 +68,8 @@ type ParkEntryDto {
   status: ParkEntryStatus!
   user: User!
   userId: String!
+  validationValueSum: Float!
+  validations: [ValidationDto!]!
   vehicle: Vehicle!
   vehicleId: String!
 }
@@ -100,6 +104,7 @@ type Query {
   tenants(tenantListDto: TenantListDto): [TenantDto!]!
   user(userDetailDto: UserDetailDto!): User!
   users(userListDto: UserListDto): [User!]!
+  validations(validationListDto: ValidationListDto): [ValidationDto!]!
   vehicle(vehicleDetailDto: VehicleDetailDto!): Vehicle!
   vehicles(VehicleListDto: VehicleListDto): [Vehicle!]!
 }
@@ -120,6 +125,8 @@ type TenantDto {
   park: ParkDto!
   parkId: String!
   tenantUserBindings: [TenantUserBindingDto!]!
+  validation: [ValidationDto!]!
+  validations: [ValidationDto!]!
 }
 
 input TenantListDto {
@@ -169,6 +176,27 @@ input UserDetailDto {
 
 input UserListDto {
   isAnonymous: Boolean
+}
+
+input ValidationCreateDto {
+  parkEntryId: String!
+  tenantId: String!
+  value: Float!
+}
+
+type ValidationDto {
+  createdAt: DateTime!
+  id: ID!
+  parkEntry: ParkEntryDto!
+  parkEntryId: String!
+  tenant: TenantDto!
+  tenantId: String!
+  value: Float!
+}
+
+input ValidationListDto {
+  parkEntryId: String!
+  tenantId: String!
 }
 
 type Vehicle {

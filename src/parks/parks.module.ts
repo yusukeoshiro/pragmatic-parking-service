@@ -10,6 +10,8 @@ import { TenantsService } from './services/tenants.service'
 import { TenantsResolver } from './resolvers/tenants.resolver'
 import { TenantUserBindingsService } from './services/tenant-user-bindings.service'
 import { TenantUserBindingsResolver } from './resolvers/tenant-user-bindings.resolver'
+import { ValidationsService } from './services/validations.service'
+import { ValidationsResolver } from './resolvers/validations.resolver'
 
 @Module({
   providers: [
@@ -21,6 +23,8 @@ import { TenantUserBindingsResolver } from './resolvers/tenant-user-bindings.res
     TenantsResolver,
     TenantUserBindingsService,
     TenantUserBindingsResolver,
+    ValidationsService,
+    ValidationsResolver,
   ],
   exports: [ParksService, ParkEntriesService, TenantUserBindingsService],
   controllers: [ParksController, ParkEntriesController],

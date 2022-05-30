@@ -20,6 +20,7 @@ import { validLetters, validRegionNames } from 'src/users/dto/constants'
 import { UserDto } from 'src/users/dto/user.dto'
 import { VehicleDto } from 'src/users/dto/vehicle.dto'
 import { ParkDto } from './park.dto'
+import { ValidationDto } from './validation.dto'
 
 export enum ParkEntryStatus {
   IN_PARKING = 'IN_PARKING',
@@ -64,6 +65,12 @@ export class ParkEntryDto {
 
   @Field()
   imageUrl: string
+
+  @Field(() => [ValidationDto])
+  validations: ValidationDto[]
+
+  @Field()
+  validationValueSum: number
 }
 
 @InputType()
@@ -98,6 +105,7 @@ export class ParkEntryCreateDto {
   @IsOptional()
   exitTime?: Date
 
+  @Field()
   @IsString()
   @IsNotEmpty()
   image: string

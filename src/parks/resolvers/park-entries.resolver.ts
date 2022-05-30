@@ -21,6 +21,8 @@ import { VehicleDto } from 'src/users/dto/vehicle.dto'
 import { BadRequestException } from '@nestjs/common'
 import { Storage } from '@google-cloud/storage'
 import { ConfigService } from '@nestjs/config'
+import { ValidationDto } from '../dto/validation.dto'
+import { ValidationsService } from '../services/validations.service'
 
 const storage = new Storage()
 
@@ -32,6 +34,7 @@ export class ParkEntriesResolver {
     private usersService: UsersService,
     private vehiclesService: VehiclesService,
     private parksService: ParksService,
+    private validationsService: ValidationsService,
     private cs: ConfigService,
   ) {
     this.imagesBucket = this.cs.get('imagesBucket')
@@ -97,5 +100,21 @@ export class ParkEntriesResolver {
       })
 
     return url
+  }
+
+  @ResolveField(() => [ValidationDto])
+  async validations(@Parent() parkEntry: ParkEntryDto) {
+    return await this.validationsService.list({ parkEntryId: parkEntry.id })
+  }
+
+  @ResolveField()
+  async validationValueSum(@Parent() parkEntry: ParkEntryDto) {
+    const validations = await this.validationsService.list({
+      parkEntryId: parkEntry.id,
+    })
+
+    return validations.reduce((prev, current) => {
+      return prev + current.value
+    }, 0)
   }
 }
