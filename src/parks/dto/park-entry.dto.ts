@@ -51,7 +51,7 @@ export class ParkEntryDto {
   @Field()
   entryTime: Date
 
-  @Field()
+  @Field({ nullable: true })
   exitTime?: Date
 
   @Field(() => ParkDto)
