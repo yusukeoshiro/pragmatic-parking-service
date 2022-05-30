@@ -9,7 +9,7 @@ import {
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
 import { ParkEntriesService } from 'src/parks/services/park-entries.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
-import { UserCreateDto, UserDto } from '../dto/user.dto'
+import { UserCreateDto, UserDetailDto, UserDto } from '../dto/user.dto'
 import { VehicleDto } from '../dto/vehicle.dto'
 import { UsersService } from '../services/users.service'
 
@@ -24,6 +24,11 @@ export class UsersResolver {
   @Mutation(() => UserDto)
   createUser(@Args('userCreateDto') userCreateDto: UserCreateDto) {
     return this.usersService.create(userCreateDto)
+  }
+
+  @Query(() => UserDto)
+  async user(@Args('userDetailDto') data: UserDetailDto) {
+    return this.usersService.getById(data.id)
   }
 
   @Query(() => [UserDto])

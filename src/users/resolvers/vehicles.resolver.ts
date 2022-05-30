@@ -12,6 +12,7 @@ import { UserDto } from 'src/users/dto/user.dto'
 import { UsersService } from 'src/users/services/users.service'
 import {
   VehicleCreateDto,
+  VehicleDetailDto,
   VehicleDto,
   VehicleListDto,
 } from '../dto/vehicle.dto'
@@ -29,6 +30,11 @@ export class VehiclesResolver {
   async createVehicle(@Args('vehicleCreateDto') data: VehicleCreateDto) {
     await this.usersService.getById(data.userId) // user must exist
     return this.vehiclesService.create(data)
+  }
+
+  @Query(() => VehicleDto)
+  async vehicle(@Args('vehicleDetailDto') data: VehicleDetailDto) {
+    return await this.vehiclesService.getById(data.id)
   }
 
   @Query(() => [VehicleDto])

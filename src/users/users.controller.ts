@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common'
-import { UserCreateDto, UserGetDto } from './dto/user.dto'
+import { UserCreateDto, UserDetailDto } from './dto/user.dto'
 import { UsersService } from './services/users.service'
 
 @Controller('users')
@@ -12,7 +12,7 @@ export class UsersController {
   }
 
   @Get('/detail')
-  public async getUser(@Query() data: UserGetDto) {
+  public async getUser(@Query() data: UserDetailDto) {
     return await this.usersService.getById(data.id)
   }
 }

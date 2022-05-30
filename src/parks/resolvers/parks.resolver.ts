@@ -9,7 +9,12 @@ import {
 } from '@nestjs/graphql'
 import { distanceBetween } from 'geofire-common'
 import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
-import { ParkCreateDto, ParkDto, ParkListDto } from '../dto/park.dto'
+import {
+  ParkCreateDto,
+  ParkDetailDto,
+  ParkDto,
+  ParkListDto,
+} from '../dto/park.dto'
 import { ParksService } from '../services/parks.service'
 import { ParkEntriesService } from '../services/park-entries.service'
 
@@ -23,6 +28,11 @@ export class ParksResolver {
   @Mutation(() => ParkDto)
   async createPark(@Args('parkCreateDto') data: ParkCreateDto) {
     return this.parksService.create(data)
+  }
+
+  @Query(() => ParkDto)
+  async park(@Args('parkDetailDto') data: ParkDetailDto) {
+    return await this.parksService.getById(data.id)
   }
 
   @Query(() => [ParkDto])

@@ -90,6 +90,13 @@ export class VehicleListDto {
 }
 
 @InputType()
+export class VehicleDetailDto {
+  @Field()
+  @IsString()
+  id: string
+}
+
+@InputType()
 export class VehicleQueryDto {
   @Field()
   @IsNumberString()

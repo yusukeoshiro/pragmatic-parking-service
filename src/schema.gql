@@ -28,6 +28,10 @@ input ParkCreateDto {
   name: String!
 }
 
+input ParkDetailDto {
+  id: String!
+}
+
 type ParkDto {
   address: String!
   capacity: Float!
@@ -85,9 +89,12 @@ input ParkListDto {
 }
 
 type Query {
+  park(parkDetailDto: ParkDetailDto!): ParkDto!
   parkEntries(parkEntryListDto: ParkEntryListDto!): [ParkEntryDto!]!
   parks(parkListDto: ParkListDto): [ParkDto!]!
+  user(userDetailDto: UserDetailDto!): User!
   users: [User!]!
+  vehicle(vehicleDetailDto: VehicleDetailDto!): Vehicle!
   vehicles(VehicleListDto: VehicleListDto): [Vehicle!]!
 }
 
@@ -105,6 +112,10 @@ input UserCreateDto {
   firstName: String!
   id: String!
   lastName: String!
+}
+
+input UserDetailDto {
+  id: String!
 }
 
 type Vehicle {
@@ -126,6 +137,10 @@ input VehicleCreateDto {
   number: String!
   regionName: String!
   userId: String!
+}
+
+input VehicleDetailDto {
+  id: String!
 }
 
 input VehicleListDto {

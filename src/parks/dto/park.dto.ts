@@ -99,3 +99,10 @@ export class ParkListDto {
   @Transform(({ value }) => Number(value))
   distance?: number
 }
+
+@InputType()
+export class ParkDetailDto {
+  @Field()
+  @IsString()
+  id: string
+}

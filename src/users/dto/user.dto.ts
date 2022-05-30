@@ -45,7 +45,9 @@ export class UserCreateDto {
   lastName: string
 }
 
-export class UserGetDto {
+@InputType()
+export class UserDetailDto {
+  @Field()
   @IsEmail()
   id: string
 }
