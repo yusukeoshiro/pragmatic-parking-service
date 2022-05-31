@@ -7,6 +7,7 @@ import { firebaseClient } from 'src/lib/firebase'
 import {
   VehicleCreateDto,
   VehicleDto,
+  VehicleFindByNumberDto,
   VehicleListDto,
   VehicleQueryDto,
 } from '../dto/vehicle.dto'
@@ -81,6 +82,21 @@ export class VehiclesService {
     const q = await ref.get()
 
     return q.docs.map((d) => doc2Vehicle(d.data()))
+  }
+
+  async findFirst(data: VehicleFindByNumberDto) {
+    const q = await firebaseClient.db
+      .collection('vehicles')
+      .where('letter', '==', data.letter)
+      .where('classNumber', '==', data.classNumber)
+      .where('regionName', '==', data.regionName)
+      .where('number', '==', data.number)
+      .limit(1)
+      .get()
+
+    if (q.empty) return undefined
+
+    return doc2Vehicle(q.docs[0].data())
   }
 
   async getById(id: string): Promise<VehicleDto> {

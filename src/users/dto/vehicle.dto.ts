@@ -116,3 +116,19 @@ export class VehicleQueryDto {
   @IsIn(validRegionNames)
   regionName: string
 }
+
+export class VehicleFindByNumberDto {
+  @IsNumberString()
+  @Length(1, 4)
+  number: string
+
+  @IsIn(validLetters)
+  letter: string
+
+  @Length(2, 3)
+  @IsNumberString()
+  classNumber: string
+
+  @IsIn(validRegionNames)
+  regionName: string
+}

@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Post,
   Query,
 } from '@nestjs/common'
@@ -10,6 +11,7 @@ import { UsersService } from 'src/users/services/users.service'
 import { VehiclesService } from 'src/users/services/vehicles.service'
 import {
   ParkEntryAnonymousCreateDto,
+  ParkEntryAnonymousExitDto,
   ParkEntryCreateDto,
   ParkEntryStatus,
 } from './dto/park-entry.dto'
@@ -63,5 +65,14 @@ export class ParkEntriesController {
     }
 
     return await this.parkEntriesService.create(parkEntriesCreateDto)
+  }
+
+  @Post('exit-from-box')
+  async exitFromBox(@Body() data: ParkEntryAnonymousExitDto) {
+    const { image, ...findParam } = data
+    const entry = await this.parkEntriesService.findFirst(findParam)
+    if (!entry) throw new NotFoundException('vehicle not found at this parking')
+
+    return this.parkEntriesService.exit({ image, id: entry.id })
   }
 }

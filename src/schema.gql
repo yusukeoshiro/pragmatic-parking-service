@@ -62,7 +62,7 @@ type ParkEntryDto {
   entryTime: DateTime!
   exitTime: DateTime
   id: ID!
-  imageUrl: String!
+  images: ParkEntryImages!
   park: ParkDto!
   parkId: String!
   status: ParkEntryStatus!
@@ -76,6 +76,16 @@ type ParkEntryDto {
 
 input ParkEntryExitDto {
   id: String!
+  image: String!
+}
+
+type ParkEntryImage {
+  imageUrl: String
+}
+
+type ParkEntryImages {
+  entry: ParkEntryImage!
+  exit: ParkEntryImage!
 }
 
 input ParkEntryListDto {

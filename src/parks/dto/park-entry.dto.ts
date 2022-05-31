@@ -32,6 +32,20 @@ registerEnumType(ParkEntryStatus, {
 })
 
 @ObjectType()
+export class ParkEntryImage {
+  @Field({ nullable: true })
+  imageUrl: string
+}
+
+@ObjectType()
+export class ParkEntryImages {
+  @Field(() => ParkEntryImage)
+  entry: ParkEntryImage
+  @Field()
+  exit: ParkEntryImage
+}
+
+@ObjectType()
 export class ParkEntryDto {
   @Field(() => ID)
   id: string
@@ -63,8 +77,8 @@ export class ParkEntryDto {
   @Field(() => UserDto)
   user: UserDto
 
-  @Field()
-  imageUrl: string
+  @Field(() => ParkEntryImages)
+  images: ParkEntryImages
 
   @Field(() => [ValidationDto])
   validations: ValidationDto[]
@@ -79,6 +93,11 @@ export class ParkEntryExitDto {
   @IsString()
   @IsNotEmpty()
   id: string
+
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  image: string
 }
 
 @InputType()
@@ -134,7 +153,7 @@ export class ParkEntryListDto {
   status?: ParkEntryStatus
 }
 
-export class ParkEntryAnonymousCreateDto {
+export class ParkEntryFindByNumberDto {
   @IsNumberString()
   @Length(1, 4)
   number: string
@@ -152,8 +171,12 @@ export class ParkEntryAnonymousCreateDto {
   @IsString()
   @IsNotEmpty()
   parkId: string
+}
 
+export class ParkEntryAnonymousCreateDto extends ParkEntryFindByNumberDto {
   @IsString()
   @IsNotEmpty()
   image: string
 }
+
+export class ParkEntryAnonymousExitDto extends ParkEntryAnonymousCreateDto {}

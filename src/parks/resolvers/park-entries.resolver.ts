@@ -10,6 +10,7 @@ import {
   ParkEntryCreateDto,
   ParkEntryDto,
   ParkEntryExitDto,
+  ParkEntryImages,
   ParkEntryListDto,
   ParkEntryStatus,
 } from 'src/parks/dto/park-entry.dto'
@@ -89,17 +90,26 @@ export class ParkEntriesResolver {
   }
 
   @ResolveField()
-  async imageUrl(@Parent() parkEntry: ParkEntryDto): Promise<string> {
-    const [url] = await storage
-      .bucket(this.imagesBucket)
-      .file(`${parkEntry.id}.jpg`)
-      .getSignedUrl({
-        version: 'v4',
-        action: 'read',
-        expires: Date.now() + 120 * 60 * 1000, // 120 minutes
-      })
+  async images(@Parent() parkEntry: ParkEntryDto): Promise<ParkEntryImages> {
+    const entranceFileName = `${parkEntry.id}-entrance.jpg`
+    const exitFileName = `${parkEntry.id}-exit.jpg`
 
-    return url
+    const entranceImageUrl = !!parkEntry.entryTime
+      ? await getSignedUrl(this.imagesBucket, entranceFileName)
+      : null
+
+    const exitImageUrl = !!parkEntry.exitTime
+      ? await getSignedUrl(this.imagesBucket, exitFileName)
+      : null
+
+    return {
+      entry: {
+        imageUrl: entranceImageUrl,
+      },
+      exit: {
+        imageUrl: exitImageUrl,
+      },
+    }
   }
 
   @ResolveField(() => [ValidationDto])
@@ -117,4 +127,19 @@ export class ParkEntriesResolver {
       return prev + current.value
     }, 0)
   }
+}
+
+const getSignedUrl = async (
+  bucket: string,
+  fileName: string,
+): Promise<string> => {
+  const [url] = await storage
+    .bucket(bucket)
+    .file(fileName)
+    .getSignedUrl({
+      version: 'v4',
+      action: 'read',
+      expires: Date.now() + 120 * 60 * 1000, // 120 minutes
+    })
+  return url
 }

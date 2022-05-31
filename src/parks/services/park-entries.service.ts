@@ -7,6 +7,7 @@ import {
   ParkEntryCreateDto,
   ParkEntryDto,
   ParkEntryExitDto,
+  ParkEntryFindByNumberDto,
   ParkEntryListDto,
   ParkEntryStatus,
 } from 'src/parks/dto/park-entry.dto'
@@ -15,20 +16,24 @@ import { firebaseClient } from 'src/lib/firebase'
 import { Storage } from '@google-cloud/storage'
 import { ConfigService } from '@nestjs/config'
 import fs from 'fs'
+import { VehiclesService } from 'src/users/services/vehicles.service'
 
 const storage = new Storage()
 
 @Injectable()
 export class ParkEntriesService {
   imagesBucket: string
-  constructor(private cs: ConfigService) {
+  constructor(
+    private cs: ConfigService,
+    private vehiclesService: VehiclesService,
+  ) {
     this.imagesBucket = this.cs.get('imagesBucket')
   }
   async create(data: ParkEntryCreateDto) {
     const { image, ...parkEntryCreateDto } = data
 
     const ref = firebaseClient.db.collection('park_entries').doc()
-    const fileName = `${ref.id}.jpg`
+    const fileName = `${ref.id}-entrance.jpg`
     fs.writeFileSync(
       fileName,
       image.replace(/^data:image\/jpeg;base64,/, ''),
@@ -54,14 +59,27 @@ export class ParkEntriesService {
   }
 
   async exit(data: ParkEntryExitDto) {
-    const entry = await this.getById(data.id)
+    const { image, id } = data
+
+    const entry = await this.getById(id)
     if (entry.status === ParkEntryStatus.EXITED)
       throw new BadRequestException(`this entry is already exited`)
 
-    await firebaseClient.db.collection('park_entries').doc(data.id).update({
+    await firebaseClient.db.collection('park_entries').doc(id).update({
       exitTime: admin.firestore.FieldValue.serverTimestamp(),
       status: ParkEntryStatus.EXITED,
     })
+
+    const fileName = `${id}-exit.jpg`
+    fs.writeFileSync(
+      fileName,
+      image.replace(/^data:image\/jpeg;base64,/, ''),
+      'base64',
+    )
+
+    await storage.bucket(this.imagesBucket).upload(fileName)
+    fs.unlinkSync(fileName)
+
     return this.getById(data.id)
   }
 
@@ -70,6 +88,22 @@ export class ParkEntriesService {
     if (!q.exists) throw new NotFoundException(`${id} does not exist`)
 
     return doc2ParkEntry(q.data())
+  }
+
+  async findFirst(data: ParkEntryFindByNumberDto): Promise<ParkEntryDto> {
+    const { parkId, ...vehicleFindByNumberDto } = data
+    const vehicle = await this.vehiclesService.findFirst(vehicleFindByNumberDto)
+    if (!vehicle) return undefined
+
+    const entries = await this.list({
+      parkId,
+      vehicleId: vehicle.id,
+      status: ParkEntryStatus.IN_PARKING,
+    })
+
+    if (entries.length === 0) return undefined
+
+    return entries[0]
   }
 
   async list(data: ParkEntryListDto): Promise<ParkEntryDto[]> {
