@@ -6,7 +6,7 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql'
-import { ParkEntryDto } from 'src/parks/dto/park-entry.dto'
+import { ParkEntryDto, ParkEntryListDto } from 'src/parks/dto/park-entry.dto'
 import { ParkEntriesService } from 'src/parks/services/park-entries.service'
 import { UserDto } from 'src/users/dto/user.dto'
 import { UsersService } from 'src/users/services/users.service'
@@ -50,7 +50,10 @@ export class VehiclesResolver {
   }
 
   @ResolveField(() => [ParkEntryDto])
-  async parkEntries(@Parent() vehicle: VehicleDto) {
-    return this.parkEntriesService.list({ vehicleId: vehicle.id })
+  async parkEntries(
+    @Parent() vehicle: VehicleDto,
+    @Args('parkEntryListDto', { nullable: true }) data: ParkEntryListDto,
+  ) {
+    return this.parkEntriesService.list({ ...data, vehicleId: vehicle.id })
   }
 }

@@ -216,7 +216,7 @@ type Vehicle {
   letter: String!
   name: String!
   number: String!
-  parkEntries: [ParkEntryDto!]!
+  parkEntries(parkEntryListDto: ParkEntryListDto): [ParkEntryDto!]!
   regionName: String!
   user: User!
 }
