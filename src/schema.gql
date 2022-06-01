@@ -45,7 +45,7 @@ type ParkDto {
   latitude: Float!
   longitude: Float!
   name: String!
-  parkEntries: [ParkEntryDto!]!
+  parkEntries(parkEntryListDto: ParkEntryListDto): [ParkEntryDto!]!
   tenants: [TenantDto!]!
 }
 
