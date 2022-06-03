@@ -139,6 +139,9 @@ const getSignedUrl = async (
   bucket: string,
   fileName: string,
 ): Promise<string> => {
+  const [exists] = await storage.bucket(bucket).file(fileName).exists()
+  if (!exists) return null
+
   const [url] = await storage
     .bucket(bucket)
     .file(fileName)

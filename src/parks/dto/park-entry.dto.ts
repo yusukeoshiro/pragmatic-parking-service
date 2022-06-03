@@ -94,10 +94,10 @@ export class ParkEntryExitDto {
   @IsNotEmpty()
   id: string
 
-  @Field()
+  @Field({ nullable: true })
   @IsString()
-  @IsNotEmpty()
-  image: string
+  @IsOptional()
+  image?: string
 }
 
 @InputType()

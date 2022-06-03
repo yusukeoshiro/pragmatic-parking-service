@@ -70,15 +70,17 @@ export class ParkEntriesService {
       status: ParkEntryStatus.EXITED,
     })
 
-    const fileName = `${id}-exit.jpg`
-    fs.writeFileSync(
-      fileName,
-      image.replace(/^data:image\/jpeg;base64,/, ''),
-      'base64',
-    )
+    if (image) {
+      const fileName = `${id}-exit.jpg`
+      fs.writeFileSync(
+        fileName,
+        image.replace(/^data:image\/jpeg;base64,/, ''),
+        'base64',
+      )
 
-    await storage.bucket(this.imagesBucket).upload(fileName)
-    fs.unlinkSync(fileName)
+      await storage.bucket(this.imagesBucket).upload(fileName)
+      fs.unlinkSync(fileName)
+    }
 
     return this.getById(data.id)
   }

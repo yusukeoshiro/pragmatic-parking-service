@@ -80,7 +80,7 @@ type ParkEntryDto {
 
 input ParkEntryExitDto {
   id: String!
-  image: String!
+  image: String
 }
 
 type ParkEntryImage {
