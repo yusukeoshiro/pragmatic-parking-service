@@ -8,6 +8,7 @@ import {
 } from '@nestjs/graphql'
 import {
   ParkEntryCreateDto,
+  ParkEntryDetailDto,
   ParkEntryDto,
   ParkEntryExitDto,
   ParkEntryImages,
@@ -110,6 +111,11 @@ export class ParkEntriesResolver {
         imageUrl: exitImageUrl,
       },
     }
+  }
+
+  @Query(() => ParkEntryDto)
+  async parkEntry(@Args('parkEntryDetailDto') data: ParkEntryDetailDto) {
+    return await this.parkEntriesService.getById(data.id)
   }
 
   @ResolveField(() => [ValidationDto])

@@ -153,6 +153,12 @@ export class ParkEntryListDto {
   status?: ParkEntryStatus
 }
 
+@InputType()
+export class ParkEntryDetailDto {
+  @Field()
+  id: string
+}
+
 export class ParkEntryFindByNumberDto {
   @IsNumberString()
   @Length(1, 4)

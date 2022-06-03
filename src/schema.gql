@@ -58,6 +58,10 @@ input ParkEntryCreateDto {
   vehicleId: String!
 }
 
+input ParkEntryDetailDto {
+  id: String!
+}
+
 type ParkEntryDto {
   entryTime: DateTime!
   exitTime: DateTime
@@ -108,6 +112,7 @@ input ParkListDto {
 type Query {
   park(parkDetailDto: ParkDetailDto!): ParkDto!
   parkEntries(parkEntryListDto: ParkEntryListDto!): [ParkEntryDto!]!
+  parkEntry(parkEntryDetailDto: ParkEntryDetailDto!): ParkEntryDto!
   parks(parkListDto: ParkListDto): [ParkDto!]!
   tenant(tenantDetailDto: TenantDetailDto!): TenantDto!
   tenantUserBindings(tenantUserBindingListDto: TenantUserBindingListDto): [TenantUserBindingDto!]!
