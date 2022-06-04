@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common'
 import {
   ParkEntryCreateDto,
+  ParkEntryDeleteDto,
   ParkEntryDto,
   ParkEntryExitDto,
   ParkEntryFindByNumberDto,
@@ -17,6 +18,7 @@ import { Storage } from '@google-cloud/storage'
 import { ConfigService } from '@nestjs/config'
 import fs from 'fs'
 import { VehiclesService } from 'src/users/services/vehicles.service'
+import { DeletedRecordDto } from 'src/common.dto'
 
 const storage = new Storage()
 
@@ -87,7 +89,7 @@ export class ParkEntriesService {
 
   async getById(id: string): Promise<ParkEntryDto> {
     const q = await firebaseClient.db.collection('park_entries').doc(id).get()
-    if (!q.exists) throw new NotFoundException(`${id} does not exist`)
+    if (!q.exists) throw new NotFoundException(`park entry ${id} does not exist`)
 
     return doc2ParkEntry(q.data())
   }
@@ -106,6 +108,12 @@ export class ParkEntriesService {
     if (entries.length === 0) return undefined
 
     return entries[0]
+  }
+
+  async delete(data: ParkEntryDeleteDto): Promise<DeletedRecordDto> {
+    await this.getById(data.id)
+    await firebaseClient.db.collection('park_entries').doc(data.id).delete()
+    return data
   }
 
   async list(data: ParkEntryListDto): Promise<ParkEntryDto[]> {

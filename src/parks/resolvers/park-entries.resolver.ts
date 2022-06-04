@@ -8,6 +8,7 @@ import {
 } from '@nestjs/graphql'
 import {
   ParkEntryCreateDto,
+  ParkEntryDeleteDto,
   ParkEntryDetailDto,
   ParkEntryDto,
   ParkEntryExitDto,
@@ -25,6 +26,7 @@ import { Storage } from '@google-cloud/storage'
 import { ConfigService } from '@nestjs/config'
 import { ValidationDto } from '../dto/validation.dto'
 import { ValidationsService } from '../services/validations.service'
+import { DeletedRecordDto } from 'src/common.dto'
 
 const storage = new Storage()
 
@@ -52,6 +54,11 @@ export class ParkEntriesResolver {
     @Args('parkEntryExitDto') data: ParkEntryExitDto,
   ): Promise<ParkEntryDto> {
     return await this.parkEntriesService.exit(data)
+  }
+
+  @Mutation(() => DeletedRecordDto)
+  async deleteParkEntry(@Args('parkEntryDeleteDto') data: ParkEntryDeleteDto) {
+    return await this.parkEntriesService.delete(data)
   }
 
   @Mutation(() => ParkEntryDto)

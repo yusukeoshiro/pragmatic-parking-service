@@ -37,7 +37,7 @@ export class ValidationsService {
 
   async getById(id: string) {
     const q = await firebaseClient.db.collection('validations').doc(id).get()
-    if (!q.exists) throw new NotFoundException(`${id} does not exist`)
+    if (!q.exists) throw new NotFoundException(`validation ${id} does not exist`)
 
     return doc2Validation(q.data())
   }

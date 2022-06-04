@@ -48,7 +48,7 @@ export class UsersService {
 
   async getById(id: string): Promise<UserDto> {
     const q = await firebaseClient.db.collection('users').doc(id).get()
-    if (!q.exists) throw new NotFoundException(`${id} does not exist`)
+    if (!q.exists) throw new NotFoundException(`user ${id} does not exist`)
 
     return doc2User(q.data())
   }

@@ -101,7 +101,7 @@ export class VehiclesService {
 
   async getById(id: string): Promise<VehicleDto> {
     const q = await firebaseClient.db.collection('vehicles').doc(id).get()
-    if (!q.exists) throw new NotFoundException(`${id} does not exist`)
+    if (!q.exists) throw new NotFoundException(`vehicle ${id} does not exist`)
 
     return doc2Vehicle(q.data())
   }

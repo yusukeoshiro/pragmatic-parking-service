@@ -55,7 +55,8 @@ export class TenantUserBindingsService {
       .collection('tenant_user_bindings')
       .doc(id)
       .get()
-    if (!q.exists) throw new NotFoundException(`${id} does not exist`)
+    if (!q.exists)
+      throw new NotFoundException(`tenant user binding ${id} does not exist`)
 
     return doc2TenantUserBinding(q.data())
   }

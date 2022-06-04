@@ -79,7 +79,7 @@ export class ParksService {
 
   async getById(id: string): Promise<ParkDto> {
     const q = await firebaseClient.db.collection('parks').doc(id).get()
-    if (!q.exists) throw new NotFoundException(`${id} does not exist`)
+    if (!q.exists) throw new NotFoundException(`park ${id} does not exist`)
 
     return doc2Park(q.data())
   }

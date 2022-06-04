@@ -58,7 +58,7 @@ export class TenantsResolver {
   }
 
   @ResolveField(() => [ValidationDto])
-  async validation(@Parent() tenant: TenantDto) {
+  async validations(@Parent() tenant: TenantDto) {
     return await this.validationsService.list({ tenantId: tenant.id })
   }
 }

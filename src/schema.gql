@@ -7,6 +7,10 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type DeletedRecordDto {
+  id: String!
+}
+
 input LatLngInput {
   latitude: Float!
   longitude: Float!
@@ -20,6 +24,7 @@ type Mutation {
   createUser(userCreateDto: UserCreateDto!): User!
   createValidation(validationCreateDto: ValidationCreateDto!): ValidationDto!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): Vehicle!
+  deleteParkEntry(parkEntryDeleteDto: ParkEntryDeleteDto!): DeletedRecordDto!
   exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
 }
 
@@ -56,6 +61,10 @@ input ParkEntryCreateDto {
   parkId: String!
   userId: String!
   vehicleId: String!
+}
+
+input ParkEntryDeleteDto {
+  id: String!
 }
 
 input ParkEntryDetailDto {
@@ -140,7 +149,6 @@ type TenantDto {
   park: ParkDto!
   parkId: String!
   tenantUserBindings: [TenantUserBindingDto!]!
-  validation: [ValidationDto!]!
   validations: [ValidationDto!]!
 }
 

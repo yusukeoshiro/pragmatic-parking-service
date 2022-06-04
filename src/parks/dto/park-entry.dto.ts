@@ -101,6 +101,14 @@ export class ParkEntryExitDto {
 }
 
 @InputType()
+export class ParkEntryDeleteDto {
+  @Field()
+  @IsString()
+  @IsNotEmpty()
+  id: string
+}
+
+@InputType()
 export class ParkEntryCreateDto {
   @Field()
   @IsString()

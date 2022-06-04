@@ -42,6 +42,7 @@ export class TenantCreateDto {
 export class TenantDetailDto {
   @Field(() => ID)
   @IsString()
+  @IsNotEmpty()
   id: string
 }
 
