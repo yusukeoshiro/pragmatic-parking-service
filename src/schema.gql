@@ -11,12 +11,26 @@ type DeletedRecordDto {
   id: String!
 }
 
+type FcmToken {
+  createdAt: DateTime!
+  id: ID!
+  lastUsedAt: DateTime!
+  token: String!
+  userId: String!
+}
+
+input FcmTokenCreateDto {
+  token: String!
+  userId: String!
+}
+
 input LatLngInput {
   latitude: Float!
   longitude: Float!
 }
 
 type Mutation {
+  createFcmToken(fcmTokenCreateDto: FcmTokenCreateDto!): FcmToken!
   createPark(parkCreateDto: ParkCreateDto!): ParkDto!
   createParkEntry(parkEntryCreateDto: ParkEntryCreateDto!): ParkEntryDto!
   createTenant(tenantCreateDto: TenantCreateDto!): TenantDto!
@@ -177,6 +191,7 @@ input TenantUserBindingListDto {
 type User {
   createdAt: DateTime!
   displayName: String!
+  fcmTokens: [FcmToken!]!
   firstName: String
   id: ID!
   isAnonymous: Boolean!
