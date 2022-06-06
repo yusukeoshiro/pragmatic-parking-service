@@ -1,11 +1,25 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import admin from 'firebase-admin'
 import { firebaseClient } from 'src/lib/firebase'
+import { logger } from 'src/lib/logger'
 import {
   FcmTokenCreateDto,
   FcmTokenDto,
   FcmTokenListDto,
 } from '../dto/fcm-token.dto'
+
+const fcm = admin.messaging()
+
+const criticalErrorCodes = [
+  'messaging/invalid-argument',
+  'messaging/invalid-recipient',
+]
+
+export type Message = {
+  title: string
+  body: string
+  imageUrl?: string
+}
 
 @Injectable()
 export class FcmTokensService {
@@ -14,6 +28,24 @@ export class FcmTokensService {
       lastUsedAt: admin.firestore.FieldValue.serverTimestamp(),
     })
     return await this.getById(token.id)
+  }
+
+  async sendMessage(tokens: FcmTokenDto[], message: Message): Promise<void> {
+    if (tokens.length === 0) return
+
+    const batchResponse = await fcm.sendMulticast({
+      tokens: tokens.map((t) => t.token),
+      notification: {
+        ...message,
+      },
+    })
+
+    for (const [index, res] of batchResponse.responses.entries()) {
+      if (!res.success && criticalErrorCodes.includes(res.error?.code)) {
+        logger.error(res.error)
+        await this.deleteById(tokens[index].id)
+      }
+    }
   }
 
   async create(data: FcmTokenCreateDto): Promise<FcmTokenDto> {
@@ -66,6 +98,10 @@ export class FcmTokensService {
     if (!q.exists) throw new NotFoundException(`fcmtoken ${id} does not exist`)
 
     return doc2FcmToken(q.data())
+  }
+
+  async deleteById(id: string) {
+    await firebaseClient.db.collection('fcm_tokens').doc(id).delete()
   }
 }
 

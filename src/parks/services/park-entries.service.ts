@@ -19,6 +19,8 @@ import { ConfigService } from '@nestjs/config'
 import fs from 'fs'
 import { VehiclesService } from 'src/users/services/vehicles.service'
 import { DeletedRecordDto } from 'src/common.dto'
+import { FcmTokensService } from 'src/users/services/fcm-tokens.service'
+import { ParksService } from './parks.service'
 
 const storage = new Storage()
 
@@ -28,6 +30,8 @@ export class ParkEntriesService {
   constructor(
     private cs: ConfigService,
     private vehiclesService: VehiclesService,
+    private fcmTokensService: FcmTokensService,
+    private parksService: ParksService,
   ) {
     this.imagesBucket = this.cs.get('imagesBucket')
   }
@@ -55,6 +59,15 @@ export class ParkEntriesService {
       status: parkEntryCreateDto.exitTime
         ? ParkEntryStatus.EXITED
         : ParkEntryStatus.IN_PARKING,
+    })
+
+    const vehicle = await this.vehiclesService.getById(data.vehicleId)
+    const park = await this.parksService.getById(data.parkId)
+    const tokens = await this.fcmTokensService.list({ userId: vehicle.userId })
+    await this.fcmTokensService.sendMessage(tokens, {
+      title: `${vehicle.name} arrived at ${park.name}`,
+      body: `the rate here is 600 yen / hour`,
+      imageUrl: await getSignedUrl(this.imagesBucket, fileName),
     })
 
     return this.getById(ref.id)
@@ -89,7 +102,8 @@ export class ParkEntriesService {
 
   async getById(id: string): Promise<ParkEntryDto> {
     const q = await firebaseClient.db.collection('park_entries').doc(id).get()
-    if (!q.exists) throw new NotFoundException(`park entry ${id} does not exist`)
+    if (!q.exists)
+      throw new NotFoundException(`park entry ${id} does not exist`)
 
     return doc2ParkEntry(q.data())
   }
@@ -145,4 +159,22 @@ const doc2ParkEntry = (data: admin.firestore.DocumentData): ParkEntryDto => {
   data.entryTime = data.entryTime ? data.entryTime.toDate() : undefined
   data.exitTime = data.exitTime ? data.exitTime.toDate() : undefined
   return data as ParkEntryDto
+}
+
+const getSignedUrl = async (
+  bucket: string,
+  fileName: string,
+): Promise<string> => {
+  const [exists] = await storage.bucket(bucket).file(fileName).exists()
+  if (!exists) return null
+
+  const [url] = await storage
+    .bucket(bucket)
+    .file(fileName)
+    .getSignedUrl({
+      version: 'v4',
+      action: 'read',
+      expires: Date.now() + 120 * 60 * 1000, // 120 minutes
+    })
+  return url
 }

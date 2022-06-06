@@ -10,7 +10,7 @@ import { FcmTokensResolver } from './resolvers/fcm-tokens.resolver'
 
 @Module({
   imports: [forwardRef(() => ParksModule)],
-  exports: [UsersService, VehiclesService],
+  exports: [UsersService, VehiclesService, FcmTokensService],
   providers: [
     UsersService,
     UsersResolver,
