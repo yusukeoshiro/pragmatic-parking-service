@@ -2,7 +2,6 @@ import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import {
   IsEmail,
   IsIn,
-  IsNotEmpty,
   IsNumberString,
   IsOptional,
   IsString,
@@ -48,6 +47,9 @@ export class VehicleDto {
   @Field()
   createdAt: Date
 
+  @Field({ nullable: true })
+  isDeleted?: boolean
+
   @Field(() => [ParkEntryDto])
   parkEntries: ParkEntryDto[]
 }
@@ -91,6 +93,13 @@ export class VehicleListDto {
 
 @InputType()
 export class VehicleDetailDto {
+  @Field()
+  @IsString()
+  id: string
+}
+
+@InputType()
+export class VehicleDeleteDto {
   @Field()
   @IsString()
   id: string

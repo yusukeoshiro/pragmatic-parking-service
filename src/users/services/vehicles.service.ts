@@ -34,6 +34,7 @@ export class VehiclesService {
       .where('letter', '==', data.letter)
       .where('classNumber', '==', data.classNumber)
       .where('regionName', '==', data.regionName)
+      .where('isDeleted', '==', false)
       .limit(1)
       .get()
     if (q.empty) {
@@ -66,6 +67,7 @@ export class VehiclesService {
     await ref.set({
       ...data,
       id: ref.id,
+      isDeleted: false,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     })
     return await this.getById(ref.id)
@@ -73,7 +75,7 @@ export class VehiclesService {
 
   async list(data: VehicleListDto): Promise<VehicleDto[]> {
     let ref: admin.firestore.CollectionReference | admin.firestore.Query =
-      firebaseClient.db.collection('vehicles')
+      firebaseClient.db.collection('vehicles').where('isDeleted', '==', false)
 
     if (data && data.userId) {
       ref = ref.where('userId', '==', data.userId)
@@ -91,6 +93,7 @@ export class VehiclesService {
       .where('classNumber', '==', data.classNumber)
       .where('regionName', '==', data.regionName)
       .where('number', '==', data.number)
+      .where('isDeleted', '==', false)
       .limit(1)
       .get()
 
@@ -104,6 +107,16 @@ export class VehiclesService {
     if (!q.exists) throw new NotFoundException(`vehicle ${id} does not exist`)
 
     return doc2Vehicle(q.data())
+  }
+
+  async deleteById(id: string): Promise<void> {
+    const vehicle = await this.getById(id)
+    if (vehicle.isDeleted)
+      throw new NotFoundException(`vehicle ${id} not found`)
+
+    await firebaseClient.db.collection('vehicles').doc(id).update({
+      isDeleted: true,
+    })
   }
 }
 

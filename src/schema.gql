@@ -39,6 +39,7 @@ type Mutation {
   createValidation(validationCreateDto: ValidationCreateDto!): ValidationDto!
   createVehicle(vehicleCreateDto: VehicleCreateDto!): Vehicle!
   deleteParkEntry(parkEntryDeleteDto: ParkEntryDeleteDto!): DeletedRecordDto!
+  deleteVehicle(vehicleDeleteDto: VehicleDeleteDto!): DeletedRecordDto!
   exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
 }
 
@@ -241,6 +242,7 @@ type Vehicle {
   classNumber: String!
   createdAt: DateTime!
   id: ID!
+  isDeleted: Boolean
   letter: String!
   name: String!
   number: String!
@@ -256,6 +258,10 @@ input VehicleCreateDto {
   number: String!
   regionName: String!
   userId: String!
+}
+
+input VehicleDeleteDto {
+  id: String!
 }
 
 input VehicleDetailDto {
