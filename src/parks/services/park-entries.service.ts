@@ -164,7 +164,10 @@ export class ParkEntriesService {
     }
 
     const q = await ref.get()
-    return q.docs.map((doc) => doc2ParkEntry(doc.data()))
+    const entries = q.docs
+      .map((doc) => doc2ParkEntry(doc.data()))
+      .sort((a, b) => b.entryTime.getTime() - a.entryTime.getTime())
+    return entries
   }
 }
 
