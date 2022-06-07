@@ -85,8 +85,8 @@ export class ParkEntriesService {
       status: ParkEntryStatus.EXITED,
     })
 
+    const fileName = `${id}-exit.jpg`
     if (image) {
-      const fileName = `${id}-exit.jpg`
       fs.writeFileSync(
         fileName,
         image.replace(/^data:image\/jpeg;base64,/, ''),
@@ -96,6 +96,19 @@ export class ParkEntriesService {
       await storage.bucket(this.imagesBucket).upload(fileName)
       fs.unlinkSync(fileName)
     }
+
+    const vehicle = await this.vehiclesService.getById(entry.vehicleId)
+    const park = await this.parksService.getById(entry.parkId)
+    const tokens = await this.fcmTokensService.list({ userId: vehicle.userId })
+    await this.fcmTokensService.sendMessage(tokens, {
+      title: `💰 Parking Fee paid!`,
+      body: `Your credit card was charged ${
+        Math.ceil(
+          (new Date().getTime() - entry.entryTime.getTime()) / 1000 / 3600,
+        ) * 600
+      } yen`,
+      imageUrl: await getSignedUrl(this.imagesBucket, fileName),
+    })
 
     return this.getById(data.id)
   }
