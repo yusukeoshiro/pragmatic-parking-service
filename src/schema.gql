@@ -41,11 +41,14 @@ type Mutation {
   deleteParkEntry(parkEntryDeleteDto: ParkEntryDeleteDto!): DeletedRecordDto!
   deleteVehicle(vehicleDeleteDto: VehicleDeleteDto!): DeletedRecordDto!
   exitParkingEntry(parkEntryExitDto: ParkEntryExitDto!): ParkEntryDto!
+  updatePark(parkUpdateDto: ParkUpdateDto!): ParkDto!
 }
 
 input ParkCreateDto {
   address: String!
   capacity: Float!
+  entranceImageUrl: String
+  exitImageUrl: String
   latitude: Float!
   longitude: Float!
   name: String!
@@ -60,6 +63,8 @@ type ParkDto {
   capacity: Float!
   createdAt: DateTime!
   distance(parkListDto: ParkListDto!): Float
+  entranceImageUrl: String
+  exitImageUrl: String
   geoHash: String!
   id: ID!
   latitude: Float!
@@ -131,6 +136,17 @@ enum ParkEntryStatus {
 input ParkListDto {
   center: LatLngInput
   distance: Float
+}
+
+input ParkUpdateDto {
+  address: String
+  capacity: Float
+  entranceImageUrl: String
+  exitImageUrl: String
+  id: String!
+  latitude: Float
+  longitude: Float
+  name: String
 }
 
 type Query {

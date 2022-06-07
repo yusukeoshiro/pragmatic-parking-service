@@ -4,7 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common'
 import { firebaseClient } from 'src/lib/firebase'
-import { ParkCreateDto, ParkDto, ParkListDto } from '../dto/park.dto'
+import {
+  ParkCreateDto,
+  ParkDto,
+  ParkListDto,
+  ParkUpdateDto,
+} from '../dto/park.dto'
 import {
   geohashForLocation,
   geohashQueryBounds,
@@ -14,6 +19,42 @@ import admin from 'firebase-admin'
 
 @Injectable()
 export class ParksService {
+  async update(data: ParkUpdateDto) {
+    await this.getById(data.id) // must exist!
+    const payload = {
+      ...(data.name && { name: data.name }),
+      ...(data.address && { address: data.address }),
+      ...(data.capacity && { capacity: data.capacity }),
+      ...(data.latitude && { latitude: data.latitude }),
+      ...(data.longitude && { longitude: data.longitude }),
+      ...(data.entranceImageUrl && {
+        entranceImageUrl: data.entranceImageUrl,
+      }),
+      ...(data.exitImageUrl && { exitImageUrl: data.exitImageUrl }),
+    }
+
+    const keys = Object.keys(payload)
+    if (keys.length === 0)
+      throw new BadRequestException(`nothing to update. add some fields`)
+
+    await firebaseClient.db
+      .collection('parks')
+      .doc(data.id)
+      .update({
+        ...(data.name && { name: data.name }),
+        ...(data.address && { address: data.address }),
+        ...(data.capacity && { capacity: data.capacity }),
+        ...(data.latitude && { latitude: data.latitude }),
+        ...(data.longitude && { longitude: data.longitude }),
+        ...(data.entranceImageUrl && {
+          entranceImageUrl: data.entranceImageUrl,
+        }),
+        ...(data.exitImageUrl && { exitImageUrl: data.exitImageUrl }),
+      })
+
+    return await this.getById(data.id)
+  }
+
   async create(data: ParkCreateDto) {
     const ref = firebaseClient.db.collection('parks').doc()
     await ref.set({

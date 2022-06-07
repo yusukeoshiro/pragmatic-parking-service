@@ -7,6 +7,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
+  IsUrl,
   Length,
 } from 'class-validator'
 import { ParkEntryDto } from './park-entry.dto'
@@ -46,6 +47,12 @@ export class ParkDto {
   @Field()
   createdAt: Date
 
+  @Field({ nullable: true })
+  entranceImageUrl: string
+
+  @Field({ nullable: true })
+  exitImageUrl: string
+
   @Field(() => Float, { nullable: true })
   distance: number
 
@@ -80,6 +87,61 @@ export class ParkCreateDto {
   @Field()
   @IsLongitude()
   longitude: number
+
+  @Field({ nullable: true })
+  @IsUrl()
+  @IsOptional()
+  entranceImageUrl: string
+
+  @Field({ nullable: true })
+  @IsUrl()
+  @IsOptional()
+  exitImageUrl: string
+}
+
+@InputType()
+export class ParkUpdateDto {
+  @Field()
+  @IsString()
+  id: string
+
+  @Field({ nullable: true })
+  @IsString()
+  @Length(5, 50)
+  @IsOptional()
+  name?: string
+
+  @Field({ nullable: true })
+  @IsString()
+  @Length(10, 50)
+  @IsOptional()
+  address?: string
+
+  @Field({ nullable: true })
+  @IsPositive()
+  @IsNumber()
+  @IsOptional()
+  capacity?: number
+
+  @Field({ nullable: true })
+  @IsLatitude()
+  @IsOptional()
+  latitude?: number
+
+  @Field({ nullable: true })
+  @IsLongitude()
+  @IsOptional()
+  longitude?: number
+
+  @Field({ nullable: true })
+  @IsUrl()
+  @IsOptional()
+  entranceImageUrl?: string
+
+  @Field({ nullable: true })
+  @IsUrl()
+  @IsOptional()
+  exitImageUrl?: string
 }
 
 @InputType()

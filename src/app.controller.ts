@@ -1,23 +1,13 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Res } from '@nestjs/common'
 import { AppService } from './app.service'
-import { I18n, I18nContext } from 'nestjs-i18n'
+import { Response } from 'express'
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  public async root() {
-    return await this.appService.getHello()
-  }
-
-  @Get('/hello')
-  public async getHello(@I18n() i18n: I18nContext) {
-    return await i18n.translate('main.HELLO_MESSAGE_WITH_NAME', {
-      args: {
-        name: 'some guy',
-      },
-    })
-    return await this.appService.getHello()
+  public async root(@Res() res: Response) {
+    res.redirect('/graphql')
   }
 }

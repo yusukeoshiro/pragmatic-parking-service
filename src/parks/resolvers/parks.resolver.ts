@@ -14,6 +14,7 @@ import {
   ParkDetailDto,
   ParkDto,
   ParkListDto,
+  ParkUpdateDto,
 } from '../dto/park.dto'
 import { ParksService } from '../services/parks.service'
 import { ParkEntriesService } from '../services/park-entries.service'
@@ -31,6 +32,11 @@ export class ParksResolver {
   @Mutation(() => ParkDto)
   async createPark(@Args('parkCreateDto') data: ParkCreateDto) {
     return this.parksService.create(data)
+  }
+
+  @Mutation(() => ParkDto)
+  async updatePark(@Args('parkUpdateDto') data: ParkUpdateDto) {
+    return this.parksService.update(data)
   }
 
   @Query(() => ParkDto)
